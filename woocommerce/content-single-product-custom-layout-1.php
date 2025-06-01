@@ -525,33 +525,27 @@ $product_name = $product->get_name();
         updatePriceDifferences(selectedPrice);
     }
     
-    // Function to calculate and display price differences
+    // Function to calculate and display price differences.
     function updatePriceDifferences(selectedPrice) {
-        // Get all price difference elements
+        // Get all price difference elements.
         const priceDifferenceElements = document.querySelectorAll('.price-difference');
         
         priceDifferenceElements.forEach(element => {
             const variationPrice = parseFloat(element.getAttribute('data-price'));
             const difference = variationPrice - selectedPrice;
             
-            // Skip the currently selected variation
-            if (difference === 0) {
+            // Skip the currently selected variation or when price is lower.
+            if (difference <= 0) {
                 element.textContent = '';
                 return;
             }
             
-            // Use the hidden field we created to store WooCommerce's formatted prices
-            let formattedDifference = '';
+            // Only show additional cost for more expensive variations.
             if (difference > 0) {
-                // Format the price using WooCommerce's formatPrice function
-                const formattedPrice = woocommerce_format_price(Math.abs(difference));
-                formattedDifference = '+ ' + formattedPrice;
-            } else if (difference < 0) {
-                const formattedPrice = woocommerce_format_price(Math.abs(difference));
-                formattedDifference = '- ' + formattedPrice;
+                // Format the price using WooCommerce's format price function.
+                const formattedPrice = woocommerce_format_price(difference);
+                element.textContent = '+ ' + formattedPrice;
             }
-            
-            element.textContent = formattedDifference;
         });
     }
     
