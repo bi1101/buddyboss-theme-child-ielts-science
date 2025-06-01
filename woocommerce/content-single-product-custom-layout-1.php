@@ -120,6 +120,8 @@ $product_name = $product->get_name();
                                             }
 
                                             if ($is_default) {
+                                                // Define $subscription_price before using it.
+                                                $subscription_price = isset($variation['display_regular_price']) ? wc_price($variation['display_regular_price']) : wc_price(0);
                                                 $subscription_period = get_post_meta($variation_id, '_subscription_period', true) ?: 'month';
 
                                                 $subscription_interval = get_post_meta($variation_id, '_subscription_period_interval', true) ?: 1;
@@ -202,12 +204,15 @@ $product_name = $product->get_name();
                                                 id="variation_<?php echo $variation_id; ?>"
                                                 data-varition-id="<?php echo $variation_id; ?>"
                                                 data-duration-label="<?php echo esc_html($variation_title); ?>"
+                                                data-price="<?php echo esc_attr($variation['display_regular_price']); ?>"
                                                 data-price-html="<?php echo esc_attr(sprintf('%s / %s%s', wc_price($variation['display_regular_price']), $subscription_interval_label, ucfirst($subscription_period))); ?>"
                                                 onchange="updateVariationUIData()" <?php echo $is_default ? 'checked' : ''; ?>>
                                             <div class="variation-checkbox-wrap">
                                                 <span
                                                     class="variation-value"><?php echo esc_html($variation_title); ?></span><br>
-                                                <span class="per-month-price"><?php echo $monthly_pricing; ?></span>
+                                                <span class="per-month-price"><?php echo $monthly_pricing; ?></span><br>
+                                                <!-- Price difference -->
+                                                <span class="price-difference" data-variation-id="<?php echo $variation_id; ?>" data-price="<?php echo $variation['display_regular_price']; ?>"></span>
                                                 <?php if (!empty($discount_text)): ?>
                                                     <span class="discount-text"><?php echo esc_html($discount_text); ?></span>
                                                 <?php endif; ?>
@@ -361,6 +366,13 @@ $product_name = $product->get_name();
         border-radius: 15px;
         transform: translate(50%, -30%)
     }
+    
+    /* Price difference styling */
+    .price-difference {
+        display: block;
+        font-size: 14px;
+        margin-top: 4px;
+    }
 
     .cl1-content-container .variation-descriptions-wrap .variation-description:not(.active) {
         display: none;
@@ -474,6 +486,7 @@ $product_name = $product->get_name();
         const variationId = selectedVariation.getAttribute('data-varition-id');
         const durationLabel = selectedVariation.getAttribute('data-duration-label');
         const priceHtml = selectedVariation.getAttribute('data-price-html');
+        const selectedPrice = parseFloat(selectedVariation.getAttribute('data-price'));
 
         // Update the order details duration label
         const durationLabelElement = document.querySelector('#order-details-duration-label');
@@ -507,6 +520,59 @@ $product_name = $product->get_name();
         if (activeDescription) {
             activeDescription.classList.add('active'); // Add active class to the current description
         }
+        
+        // Calculate and update price differences
+        updatePriceDifferences(selectedPrice);
+    }
+    
+    // Function to calculate and display price differences
+    function updatePriceDifferences(selectedPrice) {
+        // Get all price difference elements
+        const priceDifferenceElements = document.querySelectorAll('.price-difference');
+        
+        priceDifferenceElements.forEach(element => {
+            const variationPrice = parseFloat(element.getAttribute('data-price'));
+            const difference = variationPrice - selectedPrice;
+            
+            // Skip the currently selected variation
+            if (difference === 0) {
+                element.textContent = '';
+                return;
+            }
+            
+            // Use the hidden field we created to store WooCommerce's formatted prices
+            let formattedDifference = '';
+            if (difference > 0) {
+                // Format the price using WooCommerce's formatPrice function
+                const formattedPrice = woocommerce_format_price(Math.abs(difference));
+                formattedDifference = '+ ' + formattedPrice;
+            } else if (difference < 0) {
+                const formattedPrice = woocommerce_format_price(Math.abs(difference));
+                formattedDifference = '- ' + formattedPrice;
+            }
+            
+            element.textContent = formattedDifference;
+        });
+    }
+    
+    // Function to format price using WooCommerce's currency settings
+    function woocommerce_format_price(amount) {
+        // Get the format from a sample formatted price from WooCommerce
+        const samplePrice = document.querySelector('.woocommerce-Price-amount');
+        if (samplePrice) {
+            const currencySymbol = samplePrice.querySelector('.woocommerce-Price-currencySymbol')?.textContent || 'đ';
+            const sampleHTML = samplePrice.innerHTML;
+            
+            // Determine if currency symbol is before or after the amount
+            if (sampleHTML.indexOf(currencySymbol) === 0) {
+                return currencySymbol + amount.toLocaleString();
+            } else {
+                return amount.toLocaleString() + currencySymbol;
+            }
+        }
+        
+        // Fallback if no sample price is found
+        return amount.toLocaleString();
     }
 
 </script>
