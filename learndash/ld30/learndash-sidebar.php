@@ -1,6 +1,93 @@
 <?php
 
-global $post, $wpdb;
+global $post;
+
+// Helper: Determine if quiz is fully complete including non-zero score (AI graded but pending human review has score=0.).
+// Quiz completion helpers.
+if ( ! function_exists( 'bb_get_quiz_completion_state' ) ) {
+	function bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id = 0 ) { // Returns: 'not-complete' | 'pending' | 'full'.
+		if ( ! function_exists( 'learndash_is_quiz_complete' ) ) {
+			return 'not-complete';
+		}
+		if ( ! learndash_is_quiz_complete( $user_id, $quiz_id, $course_id ) ) {
+			return 'not-complete';
+		}
+		// Core thinks complete; verify score for full completion.
+		if ( ! class_exists( 'SFWD_LMS' ) || ! method_exists( 'SFWD_LMS', 'get_course_info' ) ) {
+			return 'full'; // Can't validate further.
+		}
+		$atts = array(
+			'return'           => true,
+			'type'             => array( 'quiz' ),
+			'quiz_filter_quiz' => array( (int) $quiz_id ),
+		);
+		if ( $course_id ) {
+			$atts['quiz_filter_course'] = array( (int) $course_id );
+		}
+		$course_info = SFWD_LMS::get_course_info( (int) $user_id, $atts );
+		if ( empty( $course_info['quizzes'] ) ) {
+			return 'full';
+		}
+		$latest = null;
+		foreach ( $course_info['quizzes'] as $q ) {
+			if ( (int) ( $q['quiz'] ?? 0 ) === (int) $quiz_id ) {
+				if ( ! $latest || ( ( isset( $q['time'] ) ? (int) $q['time'] : 0 ) > ( isset( $latest['time'] ) ? (int) $latest['time'] : 0 ) ) ) {
+					$latest = $q;
+				}
+			}
+		}
+		if ( ! $latest ) {
+			return 'full';
+		}
+		if ( isset( $latest['score'] ) && (int) $latest['score'] === 0 ) {
+			return 'pending'; // Awaiting manual grading.
+		}
+		return 'full';
+	}
+}
+
+if ( ! function_exists( 'bb_is_quiz_fully_complete' ) ) {
+	function bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id = 0 ) { // Backwards compat returns bool full completion.
+		return bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id ) === 'full';
+	}
+}
+
+if ( ! function_exists( 'bb_get_quiz_css_class' ) ) {
+	function bb_get_quiz_css_class( $user_id, $quiz_id, $course_id = 0 ) { // Return CSS class for title span.
+		$state = bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id );
+		if ( 'full' === $state ) {
+			return 'bb-completed-item';
+		} elseif ( 'pending' === $state ) {
+			return 'bb-pending-item';
+		}
+		return 'bb-not-completed-item';
+	}
+}
+
+if ( ! function_exists( 'bb_get_quiz_status_icon_html' ) ) {
+	function bb_get_quiz_status_icon_html( $user_id, $quiz_id, $course_id = 0 ) { // Return HTML block for status icon.
+		$state = bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id );
+		if ( 'full' === $state ) {
+			return '<div class="bb-completed bb-lms-status" data-balloon-pos="left" data-balloon="' . esc_attr__( 'Completed', 'buddyboss-theme' ) . '"><div class="i-progress i-progress-completed"><i class="bb-icon-l bb-icon-check"></i></div></div>';
+		} elseif ( 'pending' === $state ) {
+			return '<div class="bb-not-completed bb-lms-status" data-balloon-pos="left" data-balloon="' . esc_attr__( 'Passed AI Check, Pending Teacher Review', 'buddyboss-theme' ) . '"><div class="i-progress i-progress-not-completed"><i class="bb-icon-l bb-icon-user-clock"></i></div></div>';
+		}
+		return '<div class="bb-not-completed bb-lms-status" data-balloon-pos="left" data-balloon="' . esc_attr__( 'Not Completed', 'buddyboss-theme' ) . '"><div class="i-progress i-progress-not-completed"><i class="bb-icon-l bb-icon-circle"></i></div></div>';
+	}
+}
+
+// Utility for output classes and labels using bb_is_quiz_fully_complete().
+if ( ! function_exists( 'bb_get_quiz_completion_class' ) ) {
+	function bb_get_quiz_completion_class( $user_id, $quiz_id, $course_id ){ // Return CSS class for quiz completion state.
+		return bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id ) ? 'bb-completed-item' : 'bb-not-completed-item';
+	}
+}
+
+if ( ! function_exists( 'bb_get_quiz_status_wrapper_class' ) ) {
+	function bb_get_quiz_status_wrapper_class( $user_id, $quiz_id, $course_id ){ // Status wrapper complete or not.
+		return bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id ) ? 'bb-completed' : 'bb-not-completed';
+	}
+}
 
 $parent_course_data = learndash_get_setting( $post, 'course' );
 if ( 0 === $parent_course_data ) {
@@ -327,7 +414,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 																		<li class="lms-quiz-item <?php echo esc_attr( $topic_quiz['post']->ID == $post->ID ? esc_attr( 'current' ) : '' ); ?> <?php echo isset( $scheduled_class ) ? esc_attr( $scheduled_class ) : ''; ?>">
 																			<a class="flex bb-title bb-lms-title-wrap" href="<?php echo esc_url( get_permalink( $topic_quiz['post']->ID ) ); ?>" title="<?php echo esc_attr( $topic_quiz['post']->post_title ); ?>">
 																				<span class="bb-lms-ico bb-lms-ico-quiz"><i class="bb-icon-rl bb-icon-question"></i></span>
-																				<span class="flex-1 bb-lms-title <?php echo learndash_is_quiz_complete( $user_id, $topic_quiz['post']->ID, $course_id ) ? esc_attr( 'bb-completed-item' ) : esc_attr( 'bb-not-completed-item' ); ?>">
+																				<span class="flex-1 bb-lms-title <?php echo esc_attr( bb_get_quiz_css_class( $user_id, $topic_quiz['post']->ID, $course_id ) ); ?>">
 																					<?php echo wp_kses_post( apply_filters( 'the_title', $topic_quiz['post']->post_title, $topic_quiz['post']->ID ) ); ?>
 																				</span>
 																				<?php
@@ -337,25 +424,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 																					<?php
 																				endif;
 																				?>
-																				<?php
-																				if ( learndash_is_quiz_complete( $user_id, $topic_quiz['post']->ID, $course_id ) ) :
-																					?>
-																					<div class="bb-completed bb-lms-status" data-balloon-pos="left" data-balloon="<?php esc_attr_e( 'Completed', 'buddyboss-theme' ); ?>">
-																						<div class="i-progress i-progress-completed">
-																							<i class="bb-icon-l bb-icon-check"></i>
-																						</div>
-																					</div>
-																					<?php
-																				else :
-																					?>
-																					<div class="bb-not-completed bb-lms-status" data-balloon-pos="left" data-balloon="<?php esc_attr_e( 'Not Completed', 'buddyboss-theme' ); ?>">
-																						<div class="i-progress i-progress-not-completed">
-																							<i class="bb-icon-l bb-icon-circle"></i>
-																						</div>
-																					</div>
-																					<?php
-																				endif;
-																				?>
+																				<?php echo bb_get_quiz_status_icon_html( $user_id, $topic_quiz['post']->ID, $course_id ); ?>
 																			</a>
 																		</li>
 																		<?php
@@ -393,7 +462,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 													<li class="lms-quiz-item <?php echo esc_attr( $lesson_quiz['post']->ID == $post->ID ? esc_attr( 'current' ) : '' ); ?> <?php echo isset( $scheduled_class ) ? esc_attr( $scheduled_class ) : ''; ?>">
 														<a class="flex bb-title bb-lms-title-wrap" href="<?php echo esc_url( get_permalink( $lesson_quiz['post']->ID ) ); ?>" title="<?php echo esc_attr( $lesson_quiz['post']->post_title ); ?>">
 															<span class="bb-lms-ico bb-lms-ico-quiz"><i class="bb-icon-rl bb-icon-question"></i></span>
-															<span class="flex-1 bb-lms-title <?php echo learndash_is_quiz_complete( $user_id, $lesson_quiz['post']->ID, $course_id ) ? esc_attr( 'bb-completed-item' ) : esc_attr( 'bb-not-completed-item' ); ?>"><?php echo $lesson_quiz['post']->post_title; ?></span>
+															<span class="flex-1 bb-lms-title <?php echo esc_attr( bb_get_quiz_css_class( $user_id, $lesson_quiz['post']->ID, $course_id ) ); ?>"><?php echo $lesson_quiz['post']->post_title; ?></span>
 															<?php
 															if ( isset( $scheduled_class ) && $scheduled_class == 'lms-is-scheduled' ) :
 																?>
@@ -401,21 +470,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 																<?php
 															endif;
 															?>
-															<?php
-															if ( learndash_is_quiz_complete( $user_id, $lesson_quiz['post']->ID, $course_id ) ) :
-																?>
-																<div class="bb-completed bb-lms-status" data-balloon-pos="left" data-balloon="<?php esc_attr_e( 'Completed', 'buddyboss-theme' ); ?>">
-																	<div class="i-progress i-progress-completed"><i class="bb-icon-l bb-icon-check"></i></div>
-																</div>
-																<?php
-															else :
-																?>
-																<div class="bb-not-completed bb-lms-status" data-balloon-pos="left" data-balloon="<?php esc_attr_e( 'Not Completed', 'buddyboss-theme' ); ?>">
-																	<div class="i-progress i-progress-not-completed"><i class="bb-icon-l bb-icon-circle"></i></div>
-																</div>
-																<?php
-															endif;
-															?>
+																<?php echo bb_get_quiz_status_icon_html( $user_id, $lesson_quiz['post']->ID, $course_id ); ?>
 														</a>
 													</li>
 													<?php
@@ -460,7 +515,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 						<li class="lms-quiz-item <?php echo $course_quiz['post']->ID == $post->ID ? esc_attr( 'current' ) : ''; ?> <?php echo esc_attr( $locked_class ); ?> <?php echo isset( $scheduled_class ) ? esc_attr( $scheduled_class ) : ''; ?>">
 							<a class="flex bb-title bb-lms-title-wrap" href="<?php echo esc_url( get_permalink( $course_quiz['post']->ID ) ); ?>" title="<?php echo esc_attr( $course_quiz['post']->post_title ); ?>">
 								<span class="bb-lms-ico bb-lms-ico-quiz"><i class="bb-icon-rl bb-icon-question"></i></span>
-								<span class="flex-1 push-left bb-lms-title <?php echo learndash_is_quiz_complete( $user_id, $course_quiz['post']->ID, $course_id ) ? esc_attr( 'bb-completed-item' ) : esc_attr( 'bb-not-completed-item' ); ?>">
+								<span class="flex-1 push-left bb-lms-title <?php echo esc_attr( bb_get_quiz_css_class( $user_id, $course_quiz['post']->ID, $course_id ) ); ?>">
 									<span class="bb-quiz-title"><?php echo $course_quiz['post']->post_title; ?></span>
 									<?php echo $atts_access_marker; ?>
 								</span>
@@ -471,22 +526,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 									<?php
 								endif;
 								?>
-								<?php
-								if ( learndash_is_quiz_complete( $user_id, $course_quiz['post']->ID, $course_id ) ) :
-									?>
-									<div class="bb-completed bb-lms-status" data-balloon-pos="left" data-balloon="<?php esc_attr_e( 'Completed', 'buddyboss-theme' ); ?>">
-										<div class="i-progress i-progress-completed"><i class="bb-icon-check"></i></div>
-									</div>
-									<?php
-								else :
-									?>
-									<div class="bb-not-completed bb-lms-status" data-balloon-pos="left" data-balloon="<?php esc_attr_e( 'Not Completed', 'buddyboss-theme' ); ?>">
-										<div class="i-progress i-progress-not-completed"><i class="bb-icon-l bb-icon-circle"></i>
-										</div>
-									</div>
-									<?php
-								endif;
-								?>
+														<?php echo bb_get_quiz_status_icon_html( $user_id, $course_quiz['post']->ID, $course_id ); ?>
 							</a>
 						</li>
 					<?php } ?>
