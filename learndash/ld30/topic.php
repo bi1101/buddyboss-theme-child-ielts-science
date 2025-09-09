@@ -40,7 +40,23 @@ global $post, $user_id;
 // Initialize required variables for template functionality.
 $lesson_data = $post;
 $lesson_post = $post;
-$content = get_the_content(); // For shortcode duplicate checking.
+$content = isset( $content ) ? $content : ''; // Preserve pre-processed LearnDash content if already set.
+// Fallback: fetch raw content only if empty (avoids wiping injected video markup from core processing).
+if ( '' === trim( (string) $content ) ) {
+	$content = get_the_content(); // Raw content fallback.
+}
+// If video markup not present, attempt to inject LearnDash video progression HTML (our override previously removed it).
+if ( false === strpos( $content, 'class="ld-video"' ) && class_exists( 'Learndash_Course_Video' ) ) {
+	$topic_video_settings = learndash_get_setting( $post ); // Get topic settings array.
+	if (
+		defined( 'LEARNDASH_LESSON_VIDEO' ) && true === LEARNDASH_LESSON_VIDEO &&
+		isset( $topic_video_settings['lesson_video_enabled'] ) && 'on' === $topic_video_settings['lesson_video_enabled'] &&
+		! empty( $topic_video_settings['lesson_video_url'] )
+	) {
+		// Re-inject video if not already injected.
+		$content = Learndash_Course_Video::get_instance()->add_video_to_content( $content, $post, $topic_video_settings ); // Adds ld-video wrapper.
+	}
+}
 $show_content = SFWD_CPT::show_content( $post ); // Determine if content should be shown.
 
 // Get topic materials.
