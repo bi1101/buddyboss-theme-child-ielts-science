@@ -309,7 +309,42 @@ if ( empty( $course ) ) {
 									 * @param int $user_id   User ID.
 									 */
 									do_action( 'learndash-quiz-actual-content-before', $quiz_post->ID, $course_id, $user_id );
-									echo $quiz_content;
+
+									// Detect first external-enabled question to mark quiz as external and show a notice.
+									$external_quiz_meta = array(); // Holds external metadata if found.
+									if ( function_exists( 'learndash_get_quiz_questions' ) ) { // Safety check.
+										$question_ids = learndash_get_quiz_questions( $quiz_post->ID ); // Returns associative array: post_id => pro_id.
+										if ( ! empty( $question_ids ) && is_array( $question_ids ) ) {
+											foreach ( $question_ids as $post_id => $pro_id ) { // $post_id is the question post ID (e.g., 1034), $pro_id is WP Pro Quiz ID (e.g., 57).
+												if ( '1' === get_post_meta( $post_id, '_ielts_extq_enabled', true ) ) { // External flag enabled on the post.
+													$ext_id   = (int) get_post_meta( $post_id, '_ielts_extq_id', true );
+													$ext_type = (string) get_post_meta( $post_id, '_ielts_extq_type', true );
+													$external_quiz_meta = array(
+														'question_post_id' => $post_id, // The LearnDash question post ID.
+														'question_pro_id'  => $pro_id,  // The WP Pro Quiz question ID.
+														'ext_id'           => $ext_id,
+														'ext_type'         => $ext_type,
+													);
+													break; // Only need the first one for identification.
+												}
+											}
+										}
+									}
+
+									if ( ! empty( $external_quiz_meta ) ) {
+										// Add data attributes to the first wpProQuiz_content container for JS interception, including all external quiz data.
+										$attr         = sprintf(
+											' data-ieltssci-external="1" data-ieltssci-external-id="%d" data-ieltssci-external-type="%s" data-ieltssci-question-post-id="%d" data-ieltssci-question-pro-id="%d"',
+											(int) $external_quiz_meta['ext_id'],
+											esc_attr( $external_quiz_meta['ext_type'] ),
+											(int) $external_quiz_meta['question_post_id'],
+											(int) $external_quiz_meta['question_pro_id']
+										);
+										$quiz_content = preg_replace( '/(<div\s+class="wpProQuiz_content")/', '$1' . $attr, $quiz_content, 1 ); // Only first occurrence.
+										do_action( 'ieltssci_external_quiz_detected', $quiz_post->ID, $external_quiz_meta ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Intentional plugin-level action.
+									}
+
+									echo $quiz_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Content already escaped/sanitized by LD.
 									/**
 									 * Fires after the actual quiz content (not WP_Editor content).
 									 *
