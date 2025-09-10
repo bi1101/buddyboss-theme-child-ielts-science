@@ -195,7 +195,7 @@ if ( empty( $course ) ) {
 										$show_content = true;
 									} else {
 										if ( $bypass_course_limits_admin_users ) {
-											remove_filter( 'learndash_content', 'lesson_visible_after', 1, 2 );
+											remove_filter( 'learndash_content', 'lesson_visible_after', 1 );
 											$previous_lesson_completed = true;
 										} else {
 											$previous_step_post_id = learndash_user_progress_get_parent_incomplete_step( $user_id, $course_id, $quiz_post->ID );
