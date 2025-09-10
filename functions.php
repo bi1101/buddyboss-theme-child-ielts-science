@@ -1,10 +1,11 @@
 <?php
 /**
+ * BuddyBoss Child Theme Functions.
+ *
  * @package BuddyBoss Child
  * The parent theme functions are located at /buddyboss-theme/inc/theme/functions.php
  * Add your own functions at the bottom of this file.
  */
-
 
 /****************************** THEME SETUP ******************************/
 
@@ -24,7 +25,7 @@ function buddyboss_theme_child_languages() {
 
 	// Translate text from the CHILD theme only.
 	// Change 'buddyboss-theme' instances in all child theme files to 'buddyboss-theme-child'.
-	// load_theme_textdomain( 'buddyboss-theme-child', get_stylesheet_directory() . '/languages' );
+	// load_theme_textdomain( 'buddyboss-theme-child', get_stylesheet_directory() . '/languages' );.
 }
 add_action( 'after_setup_theme', 'buddyboss_theme_child_languages' );
 
@@ -43,14 +44,14 @@ function buddyboss_theme_child_scripts_styles() {
 	 * http://codex.wordpress.org/Function_Reference/wp_deregister_style
 	 */
 
-	// Styles
-	wp_enqueue_style( 'buddyboss-child-css', get_stylesheet_directory_uri() . '/assets/css/custom.css' );
+	// Styles.
+	wp_enqueue_style( 'buddyboss-child-css', get_stylesheet_directory_uri() . '/assets/css/custom.css', array(), filemtime( get_stylesheet_directory() . '/assets/css/custom.css' ) );
 
-	// Register LearnDash Previous Essays stylesheet; enqueued in the render function as needed.
-	wp_register_style( 'bb-ld-previous-essays', get_stylesheet_directory_uri() . '/assets/css/ld-previous-essays.css', array(), null );
+	// Register LearnDash Previous Essays stylesheet. Enqueued in the render function as needed.
+	wp_register_style( 'bb-ld-previous-essays', get_stylesheet_directory_uri() . '/assets/css/ld-previous-essays.css', array(), filemtime( get_stylesheet_directory() . '/assets/css/ld-previous-essays.css' ) );
 
-	// Javascript
-	wp_enqueue_script( 'buddyboss-child-js', get_stylesheet_directory_uri() . '/assets/js/custom.js' );
+	// Javascript.
+	wp_enqueue_script( 'buddyboss-child-js', get_stylesheet_directory_uri() . '/assets/js/custom.js', array(), filemtime( get_stylesheet_directory() . '/assets/js/custom.js' ), true );
 }
 add_action( 'wp_enqueue_scripts', 'buddyboss_theme_child_scripts_styles', 9999 );
 
@@ -58,21 +59,24 @@ add_action( 'wp_enqueue_scripts', 'buddyboss_theme_child_scripts_styles', 9999 )
 /****************************** CUSTOM FUNCTIONS */
 
 
-// Add custom fields to WooCommerce product editor
+// Add custom fields to WooCommerce product editor.
 add_action( 'woocommerce_product_options_advanced', 'add_custom_advanced_fields' );
-add_action( 'woocommerce_product_after_variable_attributes', 'add_custom_discount_field', 1, 3 ); // Lower priority to move fields to top
+add_action( 'woocommerce_product_after_variable_attributes', 'add_custom_discount_field', 1, 3 ); // Lower priority to move fields to top.
 add_action( 'woocommerce_process_product_meta', 'save_custom_advanced_fields' );
 add_action( 'woocommerce_save_product_variation', 'save_custom_text_field', 10, 2 );
 
-// Display custom fields in the Advanced tab
+// Display custom fields in the Advanced tab.
+/**
+ * Add custom fields to the product advanced tab.
+ */
 function add_custom_advanced_fields() {
 	global $product_object;
 
-	// Display template selection dropdown
-	if ( $product_object->get_type() == 'variable-subscription' ) {
+	// Display template selection dropdown.
+	if ( $product_object->get_type() === 'variable-subscription' ) {
 		echo '<div class="options_group">';
 
-		// Custom template selection
+		// Custom template selection.
 		woocommerce_wp_select(
 			array(
 				'id'          => '_custom_template_selection',
@@ -85,7 +89,7 @@ function add_custom_advanced_fields() {
 			)
 		);
 
-		// Custom color field
+		// Custom color field.
 		woocommerce_wp_text_input(
 			array(
 				'id'          => '_custom_product_color',
@@ -100,71 +104,99 @@ function add_custom_advanced_fields() {
 	}
 }
 
-// Save custom fields
+// Save custom fields.
+/**
+ * Save custom fields for the product.
+ *
+ * @param int $post_id Product ID.
+ */
 function save_custom_advanced_fields( $post_id ) {
-	// Save template selection
-	$selected_template = isset( $_POST['_custom_template_selection'] ) ? sanitize_text_field( $_POST['_custom_template_selection'] ) : 'default';
+	// Check nonce for security.
+	if ( ! isset( $_POST['woocommerce_meta_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ), 'woocommerce_save_data' ) ) {
+		return;
+	}
+
+	// Save template selection.
+	$selected_template = isset( $_POST['_custom_template_selection'] ) ? sanitize_text_field( wp_unslash( $_POST['_custom_template_selection'] ) ) : 'default';
 	update_post_meta( $post_id, '_custom_template_selection', $selected_template );
 
-	// Save color field
-	$product_color = isset( $_POST['_custom_product_color'] ) ? sanitize_text_field( $_POST['_custom_product_color'] ) : '';
+	// Save color field.
+	$product_color = isset( $_POST['_custom_product_color'] ) ? sanitize_text_field( wp_unslash( $_POST['_custom_product_color'] ) ) : '';
 	update_post_meta( $post_id, '_custom_product_color', $product_color );
 }
 
-// Display the custom fields in each variation
+// Display the custom fields in each variation.
+/**
+ * Add custom fields to product variations.
+ *
+ * @param int     $loop Loop index.
+ * @param array   $variation_data Variation data.
+ * @param WP_Post $variation Variation post object.
+ */
 function add_custom_discount_field( $loop, $variation_data, $variation ) {
-	// Custom Variation Title Field with tooltip
+	// Custom Variation Title Field with tooltip.
 	woocommerce_wp_text_input(
 		array(
 			'id'            => 'custom_variation_title_field_' . $variation->ID,
 			'name'          => 'custom_variation_title_field[' . $variation->ID . ']',
 			'label'         => __( 'Custom Variation Title', 'woocommerce' ),
 			'value'         => get_post_meta( $variation->ID, '_custom_variation_title_field', true ),
-			'wrapper_class' => 'form-field form-row', // Adds both classes to the <p> wrapper
-			'desc_tip'      => true, // Enables the tooltip icon
-			'description'   => __( 'Enter a custom title for this variation.', 'woocommerce' ), // Tooltip text
+			'wrapper_class' => 'form-field form-row', // Adds both classes to the <p> wrapper.
+			'desc_tip'      => true, // Enables the tooltip icon.
+			'description'   => __( 'Enter a custom title for this variation.', 'woocommerce' ), // Tooltip text.
 		)
 	);
-	// Custom Discount Text Field with tooltip
+	// Custom Discount Text Field with tooltip.
 	woocommerce_wp_text_input(
 		array(
 			'id'            => 'custom_discount_text_field_' . $variation->ID,
 			'name'          => 'custom_discount_text_field[' . $variation->ID . ']',
 			'label'         => __( 'Discount Text', 'woocommerce' ),
 			'value'         => get_post_meta( $variation->ID, '_custom_discount_text_field', true ),
-			'wrapper_class' => 'form-field form-row', // Adds both classes to the <p> wrapper
-			'desc_tip'      => true, // Enables the tooltip icon
-			'description'   => __( 'Enter a discount description for this variation.', 'woocommerce' ), // Tooltip text
+			'wrapper_class' => 'form-field form-row', // Adds both classes to the <p> wrapper.
+			'desc_tip'      => true, // Enables the tooltip icon.
+			'description'   => __( 'Enter a discount description for this variation.', 'woocommerce' ), // Tooltip text.
 		)
 	);
-	// Custom Monthly Pricing Field
+	// Custom Monthly Pricing Field.
 	woocommerce_wp_text_input(
 		array(
 			'id'                => 'custom_monthly_pricing_field_' . $variation->ID,
 			'name'              => 'custom_monthly_pricing_field[' . $variation->ID . ']',
 			'label'             => __( 'Monthly Pricing', 'woocommerce' ),
 			'value'             => get_post_meta( $variation->ID, '_custom_monthly_pricing_field', true ),
-			'wrapper_class'     => 'form-field form-row required-field', // Adds both classes to the <p> wrapper
-			'desc_tip'          => true, // Enables the tooltip icon
-			'description'       => __( 'Enter the monthly price for this variation. This field is required.', 'woocommerce' ), // Tooltip text
+			'wrapper_class'     => 'form-field form-row required-field', // Adds both classes to the <p> wrapper.
+			'desc_tip'          => true, // Enables the tooltip icon.
+			'description'       => __( 'Enter the monthly price for this variation. This field is required.', 'woocommerce' ), // Tooltip text.
 			'custom_attributes' => array(
-				'required' => 'required', // Make it required
+				'required' => 'required', // Make it required.
 			),
 		)
 	);
 }
 
-// Save the custom fields for each variation
-function save_custom_text_field( $variation_id, $i ) {
+// Save the custom fields for each variation.
+/**
+ * Save custom fields for product variations.
+ *
+ * @param int $variation_id Variation ID.
+ * @param int $i Loop index (unused).
+ */
+function save_custom_text_field( $variation_id, $i ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- $i is required by hook.
+	// Check nonce for security.
+	if ( ! isset( $_POST['_wcsnonce_save_variations'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wcsnonce_save_variations'] ) ), 'wcs_subscription_variations' ) ) {
+		return;
+	}
+
 	if ( isset( $_POST['custom_discount_text_field'][ $variation_id ] ) ) {
-		update_post_meta( $variation_id, '_custom_discount_text_field', sanitize_text_field( $_POST['custom_discount_text_field'][ $variation_id ] ) );
+		update_post_meta( $variation_id, '_custom_discount_text_field', sanitize_text_field( wp_unslash( $_POST['custom_discount_text_field'][ $variation_id ] ) ) );
 	}
 	if ( isset( $_POST['custom_variation_title_field'][ $variation_id ] ) ) {
-		update_post_meta( $variation_id, '_custom_variation_title_field', sanitize_text_field( $_POST['custom_variation_title_field'][ $variation_id ] ) );
+		update_post_meta( $variation_id, '_custom_variation_title_field', sanitize_text_field( wp_unslash( $_POST['custom_variation_title_field'][ $variation_id ] ) ) );
 	}
-	// Save the custom monthly pricing field
+	// Save the custom monthly pricing field.
 	if ( isset( $_POST['custom_monthly_pricing_field'][ $variation_id ] ) ) {
-		update_post_meta( $variation_id, '_custom_monthly_pricing_field', sanitize_text_field( $_POST['custom_monthly_pricing_field'][ $variation_id ] ) );
+		update_post_meta( $variation_id, '_custom_monthly_pricing_field', sanitize_text_field( wp_unslash( $_POST['custom_monthly_pricing_field'][ $variation_id ] ) ) );
 	}
 }
 
@@ -207,7 +239,7 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 	foreach ( $quiz_attempts as $attempt ) {
 		// Each attempt has keys like: quiz (post ID), time, graded (array of essays), etc.
 		$attempt_quiz_post_id = isset( $attempt['quiz'] ) ? intval( $attempt['quiz'] ) : 0; // Quiz WP_Post ID.
-		if ( $attempt_quiz_post_id === intval( $quiz_id ) && ! empty( $attempt['graded'] ) && is_array( $attempt['graded'] ) ) {
+		if ( intval( $quiz_id ) === $attempt_quiz_post_id && ! empty( $attempt['graded'] ) && is_array( $attempt['graded'] ) ) {
 			$attempts_for_quiz[] = $attempt; // Keep attempts that contain essay grading data.
 		}
 	}
@@ -232,7 +264,7 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 	if ( ! wp_style_is( 'bb-ld-previous-essays', 'enqueued' ) ) {
 		if ( ! wp_style_is( 'bb-ld-previous-essays', 'registered' ) ) {
 			// Fallback in case registration did not occur earlier.
-			wp_register_style( 'bb-ld-previous-essays', get_stylesheet_directory_uri() . '/assets/css/ld-previous-essays.css', array(), null );
+			wp_register_style( 'bb-ld-previous-essays', get_stylesheet_directory_uri() . '/assets/css/ld-previous-essays.css', array(), file_exists( get_stylesheet_directory() . '/assets/css/ld-previous-essays.css' ) ? filemtime( get_stylesheet_directory() . '/assets/css/ld-previous-essays.css' ) : '1.0.0' );
 		}
 		wp_enqueue_style( 'bb-ld-previous-essays' );
 	}
@@ -321,12 +353,17 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 											<?php
 										}
 										// If attempt failed and we know the passing threshold, display it for the user.
-										if ( 'not_pass' === $display_status && null !== $passing_percentage && $passing_percentage > 0 ) :
+										if ( 'not_pass' === $display_status && null !== $passing_percentage && 0 < $passing_percentage ) :
 											$passing_percentage_display = absint( $passing_percentage ); // Safe percent for display.
 											$ielts_passing              = bb_convert_percentage_to_ielts( $passing_percentage );
 											$ielts_passing_formatted    = number_format( $ielts_passing, 1 );
 											?>
-												<span class="ld-essay__passing" title="<?php echo esc_attr__( 'Passing threshold for this quiz.', 'learndash' ); ?>"><?php printf( esc_html__( 'Requires: %1$s%% (%2$s)', 'learndash' ), esc_html( $passing_percentage_display ), esc_html( $ielts_passing_formatted ) ); ?></span>
+												<span class="ld-essay__passing" title="<?php echo esc_attr__( 'Passing threshold for this quiz.', 'learndash' ); ?>">
+													<?php
+													/* translators: %1$s is the percentage required, %2$s is the IELTS band score. */
+													printf( esc_html__( 'Requires: %1$s%% (%2$s)', 'learndash' ), esc_html( $passing_percentage_display ), esc_html( $ielts_passing_formatted ) );
+													?>
+												</span>
 											<?php
 										endif;
 										?>
@@ -335,16 +372,16 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 												<?php
 												$awarded = isset( $details['points']['awarded'] ) ? $details['points']['awarded'] : null; // Points awarded.
 												$total   = isset( $details['points']['total'] ) ? $details['points']['total'] : null; // Points total.
-												if ( $awarded !== null || $total !== null ) {
-													$label       = ( isset( $details['status'] ) && $details['status'] === 'graded' ) ? esc_html__( 'Teacher Score:', 'learndash' ) : esc_html__( 'AI Score:', 'learndash' );
-													$points_text = $label . ' ' . ( $awarded !== null ? esc_html( $awarded ) : '—' ) . ' / ' . ( $total !== null ? esc_html( $total ) : '—' ); // Points text.
-													if ( $awarded !== null && $total !== null && $total > 0 ) {
+												if ( null !== $awarded || null !== $total ) {
+													$label       = ( isset( $details['status'] ) && 'graded' === $details['status'] ) ? esc_html__( 'Teacher Score:', 'learndash' ) : esc_html__( 'AI Score:', 'learndash' );
+													$points_text = $label . ' ' . ( null !== $awarded ? esc_html( $awarded ) : '—' ) . ' / ' . ( null !== $total ? esc_html( $total ) : '—' );
+													if ( null !== $awarded && null !== $total && 0 < $total ) {
 														$percentage   = ( $awarded / $total ) * 100;
 														$ielts        = bb_convert_percentage_to_ielts( $percentage );
-														$points_text .= ' (' . number_format( $ielts, 1 ) . ')';
+														$points_text .= ' (' . esc_html( number_format( $ielts, 1 ) ) . ')';
 													}
 													?>
-													<span class="ld-essay__points" title="<?php echo esc_attr__( 'Points Awarded / Total', 'learndash' ); ?>"><?php echo $points_text; ?></span>
+													<span class="ld-essay__points" title="<?php echo esc_attr__( 'Points Awarded / Total', 'learndash' ); ?>"><?php echo esc_html( $points_text ); ?></span>
 													<?php
 												}
 												?>
