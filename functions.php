@@ -203,13 +203,24 @@ function save_custom_text_field( $variation_id, $i ) { // phpcs:ignore Generic.C
 /**
  * Convert percentage to IELTS band score.
  *
- * @param float $percentage The percentage score (0-100).
+ * @param float  $percentage The percentage score (0-100).
+ * @param string $round_mode The rounding mode: 'nearest', 'up', or 'down'. Default 'nearest'.
  * @return float The IELTS band score (0-9).
  */
-function bb_convert_percentage_to_ielts( $percentage ) {
+function bb_convert_percentage_to_ielts( $percentage, $round_mode = 'nearest' ) {
 	$percentage = floatval( $percentage );
 	$score      = ( $percentage / 100 ) * 9;
-	$rounded    = round( $score * 2 ) / 2;
+	switch ( $round_mode ) {
+		case 'up':
+			$rounded = ceil( $score * 2 ) / 2;
+			break;
+		case 'down':
+			$rounded = floor( $score * 2 ) / 2;
+			break;
+		default:
+			$rounded = round( $score * 2 ) / 2;
+			break;
+	}
 	return min( 9, max( 0, $rounded ) );
 }
 
@@ -355,7 +366,7 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 										// If attempt failed and we know the passing threshold, display it for the user.
 										if ( 'not_pass' === $display_status && null !== $passing_percentage && 0 < $passing_percentage ) :
 											$passing_percentage_display = absint( $passing_percentage ); // Safe percent for display.
-											$ielts_passing              = bb_convert_percentage_to_ielts( $passing_percentage );
+											$ielts_passing              = bb_convert_percentage_to_ielts( $passing_percentage, 'up' );
 											$ielts_passing_formatted    = number_format( $ielts_passing, 1 );
 											?>
 												<span class="ld-essay__passing" title="<?php echo esc_attr__( 'Passing threshold for this quiz.', 'learndash' ); ?>">
