@@ -38,12 +38,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $post, $user_id;
 
 // Initialize required variables for template functionality.
-$content = get_the_content(); // For shortcode duplicate checking.
+$content      = get_the_content(); // For shortcode duplicate checking.
 $show_content = SFWD_CPT::show_content( $post ); // Determine if content should be shown.
 
 // Get lesson materials.
 $lesson_settings = learndash_get_setting( $post );
-$materials = '';
+$materials       = '';
 if ( ! empty( $lesson_settings['lesson_materials_enabled'] ) && ( 'on' === $lesson_settings['lesson_materials_enabled'] ) ) {
 	if ( ! empty( $lesson_settings['lesson_materials'] ) ) {
 		$materials = wp_specialchars_decode( strval( $lesson_settings['lesson_materials'] ), ENT_QUOTES );
@@ -97,7 +97,7 @@ if ( empty( $course ) ) {
 						if ( $les->ID == $post->ID ) {
 							break;
 						}
-						$lesson_no ++;
+						++$lesson_no;
 					}
 					?>
 
@@ -221,16 +221,16 @@ if ( empty( $course ) ) {
 							 * If the user needs to complete the previous lesson display an alert
 							 */
 							if ( ( isset( $lesson_progression_enabled ) ) && ( true === (bool) $lesson_progression_enabled ) && ( isset( $previous_lesson_completed ) ) && ( true !== $previous_lesson_completed ) ) {
-								if ( ( ! learndash_is_sample( $post ) ) || ( learndash_is_sample( $post ) && true === ( bool) $has_access ) ) {
+								if ( ( ! learndash_is_sample( $post ) ) || ( learndash_is_sample( $post ) && true === (bool) $has_access ) ) {
 									$previous_item_id = learndash_user_progress_get_previous_incomplete_step( $user_id, $course_id, $post->ID );
 									if ( ! empty( $previous_item_id ) ) {
 										learndash_get_template_part(
 											'modules/messages/lesson-progression.php',
 											array(
 												'previous_item' => get_post( $previous_item_id ),
-												'course_id'     => $course_id,
-												'context'       => 'lesson',
-												'user_id'       => $user_id,
+												'course_id' => $course_id,
+												'context' => 'lesson',
+												'user_id' => $user_id,
 											),
 											true
 										);
@@ -328,10 +328,10 @@ if ( empty( $course ) ) {
 											'lesson/listing.php',
 											array(
 												'course_id' => $course_id,
-												'lesson'    => $lesson,
-												'topics'    => $topics,
-												'quizzes'   => $quizzes,
-												'user_id'   => $user_id,
+												'lesson'  => $lesson,
+												'topics'  => $topics,
+												'quizzes' => $quizzes,
+												'user_id' => $user_id,
 											),
 											true
 										);
@@ -358,7 +358,7 @@ if ( empty( $course ) ) {
 									}
 								}
 							} else {
-							
+
 								/**
 								 * Set a variable to switch the next button to complete button
 								 *

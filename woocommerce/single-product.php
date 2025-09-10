@@ -10,14 +10,14 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 get_header( 'shop' ); ?>
 
 	<?php
 		/**
-		 * woocommerce_before_main_content hook.
+		 * WooCommerce before main content hook.
 		 *
 		 * @hooked woocommerce_output_content_wrapper - 10 (outputs opening divs for the content)
 		 * @hooked woocommerce_breadcrumb - 20
@@ -29,26 +29,26 @@ get_header( 'shop' ); ?>
 			<?php the_post(); ?>
 
 			<?php
-				// Retrieve the selected layout for the current product
+				// Retrieve the selected layout for the current product.
 				$selected_layout = get_post_meta( get_the_ID(), '_custom_template_selection', true );
 
-				// Get the product object and check if the product type is 'variable-subscription'
+				// Get the product object and check if the product type is 'variable-subscription'.
 				$product = wc_get_product( get_the_ID() );
-				if ( $selected_layout === 'custom_layout_1' && $product && $product->get_type() === 'variable-subscription' ) {
-                    // Load custom layout template for variable subscription products
-					wc_get_template_part( 'content', 'single-product-custom-layout-1' );
-				} else {
-                    echo 'Loading Default';
-					// Load default layout
-					wc_get_template_part( 'content', 'single-product' );
-				}
+			if ( 'custom_layout_1' === $selected_layout && $product && 'variable-subscription' === $product->get_type() ) {
+				// Load custom layout template for variable subscription products.
+				wc_get_template_part( 'content', 'single-product-custom-layout-1' );
+			} else {
+				echo 'Loading Default';
+				// Load default layout.
+				wc_get_template_part( 'content', 'single-product' );
+			}
 			?>
 
 		<?php endwhile; // end of the loop. ?>
 
 	<?php
 		/**
-		 * woocommerce_after_main_content hook.
+		 * WooCommerce after main content hook.
 		 *
 		 * @hooked woocommerce_output_content_wrapper_end - 10 (outputs closing divs for the content)
 		 */
@@ -57,7 +57,7 @@ get_header( 'shop' ); ?>
 
 	<?php
 		/**
-		 * woocommerce_sidebar hook.
+		 * WooCommerce sidebar hook.
 		 *
 		 * @hooked woocommerce_get_sidebar - 10
 		 */

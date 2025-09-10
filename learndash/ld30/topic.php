@@ -40,7 +40,7 @@ global $post, $user_id;
 // Initialize required variables for template functionality.
 $lesson_data = $post;
 $lesson_post = $post;
-$content = isset( $content ) ? $content : ''; // Preserve pre-processed LearnDash content if already set.
+$content     = isset( $content ) ? $content : ''; // Preserve pre-processed LearnDash content if already set.
 // Fallback: fetch raw content only if empty (avoids wiping injected video markup from core processing).
 if ( '' === trim( (string) $content ) ) {
 	$content = get_the_content(); // Raw content fallback.
@@ -61,7 +61,7 @@ $show_content = SFWD_CPT::show_content( $post ); // Determine if content should 
 
 // Get topic materials.
 $topic_settings = learndash_get_setting( $post->ID );
-$materials = '';
+$materials      = '';
 if ( ! empty( $topic_settings['topic_materials_enabled'] ) && ( 'on' === $topic_settings['topic_materials_enabled'] ) ) {
 	if ( ! empty( $topic_settings['topic_materials'] ) ) {
 		$materials = wp_specialchars_decode( strval( $topic_settings['topic_materials'] ), ENT_QUOTES );
@@ -95,16 +95,16 @@ $topics    = learndash_get_topic_list( $lesson_id, $course_id );
 
 // Initialize progression-related variables.
 $lesson_progression_enabled = learndash_lesson_progression_enabled( $course_id );
-$lesson_post = get_post( $lesson_id );
+$lesson_post                = get_post( $lesson_id );
 
 // Initialize completion status variables.
 $previous_lesson_completed = false;
-$previous_topic_completed = false;
+$previous_topic_completed  = false;
 
 if ( ! empty( $user_id ) ) {
 	if ( learndash_user_progress_is_step_complete( $user_id, $course_id, $post->ID ) ) {
 		$previous_lesson_completed = true;
-		$previous_topic_completed = true;
+		$previous_topic_completed  = true;
 	} elseif ( $lesson_progression_enabled ) {
 		$previous_step_post_id = learndash_user_progress_get_previous_incomplete_step( $user_id, $course_id, $post->ID );
 		if ( ( $previous_step_post_id ) && ( $previous_step_post_id === $post->ID ) ) {
@@ -114,17 +114,15 @@ if ( ! empty( $user_id ) ) {
 		}
 		$previous_topic_completed = $previous_lesson_completed;
 	} else {
-		$previous_topic_completed = true;
+		$previous_topic_completed  = true;
 		$previous_lesson_completed = true;
 	}
-} else {
-	if ( ( ! learndash_is_sample( $post ) ) && ( ( learndash_get_setting( $lesson_id, 'visible_after' ) ) || ( learndash_get_setting( $lesson_id, 'visible_after_specific_date' ) ) ) ) {
-		$previous_topic_completed = false;
+} elseif ( ( ! learndash_is_sample( $post ) ) && ( ( learndash_get_setting( $lesson_id, 'visible_after' ) ) || ( learndash_get_setting( $lesson_id, 'visible_after_specific_date' ) ) ) ) {
+		$previous_topic_completed  = false;
 		$previous_lesson_completed = false;
-	} else {
-		$previous_topic_completed = true;
-		$previous_lesson_completed = true;
-	}
+} else {
+	$previous_topic_completed  = true;
+	$previous_lesson_completed = true;
 }
 ?>
 
@@ -150,7 +148,7 @@ if ( ! empty( $user_id ) ) {
 						if ( $les->ID === (int) $lesson_id ) {
 							break;
 						}
-						$lesson_no ++;
+						++$lesson_no;
 					}
 
 					$topic_no = 1;
@@ -158,7 +156,7 @@ if ( ! empty( $user_id ) ) {
 						if ( $topic->ID === $post->ID ) {
 							break;
 						}
-						$topic_no ++;
+						++$topic_no;
 					}
 					?>
 
@@ -171,9 +169,9 @@ if ( ! empty( $user_id ) ) {
 						 * @param int $course_id Course ID.
 						 * @param int $user_id   User ID.
 						 */
-						 do_action( 'learndash-topic-before', get_the_ID(), $course_id, $user_id );
+						do_action( 'learndash-topic-before', get_the_ID(), $course_id, $user_id );
 						?>
-						 <div id="learndash-course-header" class="bb-lms-header">
+						<div id="learndash-course-header" class="bb-lms-header">
 							<div class="bb-ld-info-bar">
 								<?php
 								if ( ( defined( 'LEARNDASH_TEMPLATE_CONTENT_METHOD' ) ) && ( 'shortcode' === LEARNDASH_TEMPLATE_CONTENT_METHOD ) ) {

@@ -57,7 +57,7 @@ $is_lms_inner       = ( class_exists( 'SFWD_LMS' ) && buddyboss_is_learndash_inn
 						<?php
 						if ( 'name_and_avatar' === $profile_dropdown ) {
 							?>
-                            <?php echo do_shortcode('[elementor-template id="115"]'); ?>
+							<?php echo do_shortcode( '[elementor-template id="115"]' ); ?>
 							<span class="user-name"><?php echo esc_html( $display_name ); ?></span><i class="bb-icon-l bb-icon-angle-down"></i>
 							<?php
 						}
@@ -83,15 +83,15 @@ $is_lms_inner       = ( class_exists( 'SFWD_LMS' ) && buddyboss_is_learndash_inn
 								</li>
 								<?php
 								$theme_menu_locations = get_nav_menu_locations();
-								
+
 								if ( class_exists( 'SFWD_LMS' ) && ld_30_focus_mode_enable() && isset( $theme_menu_locations['ld30_focus_mode'] ) ) {
 									wp_nav_menu(
 										array(
 											'theme_location' => 'ld30_focus_mode',
-											'container' => false,
+											'container'   => false,
 											'fallback_cb' => false,
-											'walker'  => new BuddyBoss_SubMenuWrap(),
-											'menu_class' => 'bb-my-account-menu',
+											'walker'      => new BuddyBoss_SubMenuWrap(),
+											'menu_class'  => 'bb-my-account-menu',
 										)
 									);
 								} elseif ( function_exists( 'bp_is_active' ) ) {
@@ -131,13 +131,13 @@ $is_lms_inner       = ( class_exists( 'SFWD_LMS' ) && buddyboss_is_learndash_inn
 		if ( ! is_user_logged_in() ) :
 			?>
 
-			<?php if ( $show_search && 4 !== $header_style && !$is_lms_inner ) : ?>
+			<?php if ( $show_search && 4 !== $header_style && ! $is_lms_inner ) : ?>
 				<a href="#" class="header-search-link" data-balloon-pos="down" data-balloon="<?php esc_attr_e( 'Search', 'buddyboss-theme' ); ?>"><i class="bb-icon-l bb-icon-search"></i></a>
 				<span class="search-separator bb-separator"></span>
 				<?php
 			endif;
 
-			if ( $show_shopping_cart && class_exists( 'WooCommerce' ) && !$is_lms_inner ) :
+			if ( $show_shopping_cart && class_exists( 'WooCommerce' ) && ! $is_lms_inner ) :
 				get_template_part( 'template-parts/cart-dropdown' );
 			endif;
 			?>
@@ -152,10 +152,10 @@ $is_lms_inner       = ( class_exists( 'SFWD_LMS' ) && buddyboss_is_learndash_inn
 
 			endif;
 
-			if (
+		if (
 				3 === $header_style || $is_lms_inner
 			) :
-			    echo buddypanel_position_right();
+			echo buddypanel_position_right();
 			endif;
 		?>
 

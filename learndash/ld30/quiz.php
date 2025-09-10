@@ -251,7 +251,7 @@ if ( empty( $course ) ) {
 										 * @param int $course_id Course ID.
 										 * @param int $user_id   User ID.
 										 */
-										 do_action( 'learndash-quiz-progression-before', $quiz_post->ID, $course_id, $user_id );
+										do_action( 'learndash-quiz-progression-before', $quiz_post->ID, $course_id, $user_id );
 
 										learndash_get_template_part(
 											'modules/messages/lesson-progression.php',
@@ -317,8 +317,8 @@ if ( empty( $course ) ) {
 										if ( ! empty( $question_ids ) && is_array( $question_ids ) ) {
 											foreach ( $question_ids as $post_id => $pro_id ) { // $post_id is the question post ID (e.g., 1034), $pro_id is WP Pro Quiz ID (e.g., 57).
 												if ( '1' === get_post_meta( $post_id, '_ielts_extq_enabled', true ) ) { // External flag enabled on the post.
-													$ext_id   = (int) get_post_meta( $post_id, '_ielts_extq_id', true );
-													$ext_type = (string) get_post_meta( $post_id, '_ielts_extq_type', true );
+													$ext_id             = (int) get_post_meta( $post_id, '_ielts_extq_id', true );
+													$ext_type           = (string) get_post_meta( $post_id, '_ielts_extq_type', true );
 													$external_quiz_meta = array(
 														'question_post_id' => $post_id, // The LearnDash question post ID.
 														'question_pro_id'  => $pro_id,  // The WP Pro Quiz question ID.

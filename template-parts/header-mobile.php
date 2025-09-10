@@ -71,12 +71,16 @@ $logo_class         = ( $logo_align <= 1 && ( ! buddyboss_is_learndash_inner() &
 					</a>
 					<a href="#" class="header-maximize-link course-toggle-view" data-balloon-pos="left" data-balloon="<?php esc_html_e( 'Hide Sidepanel', 'buddyboss-theme' ); ?>"><i class="bb-icon-l bb-icon-expand"></i></a>
 					<a href="#" class="header-minimize-link course-toggle-view" data-balloon-pos="left" data-balloon="<?php esc_html_e( 'Show Sidepanel', 'buddyboss-theme' ); ?>"><i class="bb-icon-l bb-icon-merge"></i></a>
-				<?php } else {
-					if ( $show_search ) : ?>
+					<?php
+				} else {
+					if ( $show_search ) :
+						?>
 						<a data-balloon-pos="left" data-balloon="<?php esc_html_e( 'Search', 'buddyboss-theme' ); ?>" href="#" class="push-right header-search-link"><i class="bb-icon-l bb-icon-search"></i></a>
 						<span class="search-separator bb-separator"></span>
-					<?php endif;
-					if ( $show_shopping_cart && class_exists( 'WooCommerce' ) ) : ?>
+						<?php
+					endif;
+					if ( $show_shopping_cart && class_exists( 'WooCommerce' ) ) :
+						?>
 						<?php get_template_part( 'template-parts/cart-dropdown' ); ?>
 					<?php endif; ?>
 
@@ -85,11 +89,13 @@ $logo_class         = ( $logo_align <= 1 && ( ! buddyboss_is_learndash_inner() &
 					<?php
 				}
 			} else {
-				if ( $show_search ) : ?>
+				if ( $show_search ) :
+					?>
 					<a data-balloon-pos="left" data-balloon="<?php esc_html_e( 'Search', 'buddyboss-theme' ); ?>" href="#" class="push-right header-search-link"><i class="bb-icon-l bb-icon-search"></i></a>
 					<?php if ( $show_messages && function_exists( 'bp_is_active' ) && bp_is_active( 'messages' ) || $show_notifications && function_exists( 'bp_is_active' ) && bp_is_active( 'notifications' ) || $show_shopping_cart && class_exists( 'WooCommerce' ) ) : ?>
 						<span class="search-separator bb-separator"></span>
-					<?php endif;
+						<?php
+					endif;
 				endif;
 
 				if ( $show_messages && function_exists( 'bp_is_active' ) && bp_is_active( 'messages' ) ) :
@@ -127,7 +133,7 @@ $logo_class         = ( $logo_align <= 1 && ( ! buddyboss_is_learndash_inner() &
 				?>
 				<div class="user-wrap">
 					<a href="<?php echo esc_url( $user_link ); ?>"><?php echo get_avatar( $current_user->ID, 100 ); ?></a>
-					<?php echo do_shortcode('[elementor-template id="115"]'); ?>
+					<?php echo do_shortcode( '[elementor-template id="115"]' ); ?>
 					<div>
 						<a href="<?php echo esc_url( $user_link ); ?>">
 							<span class="user-name"><?php echo esc_html( $display_name ); ?></span>
@@ -200,9 +206,8 @@ $logo_class         = ( $logo_align <= 1 && ( ! buddyboss_is_learndash_inner() &
 					);
 
 				}
-			} else {
+			} elseif ( has_nav_menu( 'mobile-menu-logged-out' ) ) {
 
-				if ( has_nav_menu( 'mobile-menu-logged-out' ) ) {
 
 					wp_nav_menu(
 						array(
@@ -215,31 +220,29 @@ $logo_class         = ( $logo_align <= 1 && ( ! buddyboss_is_learndash_inner() &
 						)
 					);
 
-				} elseif ( has_nav_menu( 'header-menu-logout' ) ) {
+			} elseif ( has_nav_menu( 'header-menu-logout' ) ) {
 
-					wp_nav_menu(
-						array(
-							'theme_location' => 'header-menu-logout',
-							'menu_id'        => '',
-							'container'      => false,
-							'fallback_cb'    => false,
-							'menu_class'     => 'bb-primary-menu mobile-menu buddypanel-menu side-panel-menu',
-						)
-					);
-				} elseif ( has_nav_menu( 'buddypanel-loggedout' ) ) {
+				wp_nav_menu(
+					array(
+						'theme_location' => 'header-menu-logout',
+						'menu_id'        => '',
+						'container'      => false,
+						'fallback_cb'    => false,
+						'menu_class'     => 'bb-primary-menu mobile-menu buddypanel-menu side-panel-menu',
+					)
+				);
+			} elseif ( has_nav_menu( 'buddypanel-loggedout' ) ) {
 
-					wp_nav_menu(
-						array(
-							'theme_location' => 'buddypanel-loggedout',
-							'menu_id'        => '',
-							'container'      => false,
-							'fallback_cb'    => false,
-							'walker'         => new BuddyBoss_BuddyPanel_Menu_Walker(),
-							'menu_class'     => 'bb-primary-menu mobile-menu buddypanel-menu side-panel-menu',
-						)
-					);
-
-				}
+				wp_nav_menu(
+					array(
+						'theme_location' => 'buddypanel-loggedout',
+						'menu_id'        => '',
+						'container'      => false,
+						'fallback_cb'    => false,
+						'walker'         => new BuddyBoss_BuddyPanel_Menu_Walker(),
+						'menu_class'     => 'bb-primary-menu mobile-menu buddypanel-menu side-panel-menu',
+					)
+				);
 			}
 			?>
 		</nav>

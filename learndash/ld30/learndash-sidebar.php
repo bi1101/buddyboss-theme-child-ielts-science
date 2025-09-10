@@ -5,7 +5,8 @@ global $post;
 // Helper: Determine if quiz is fully complete including non-zero score (AI graded but pending human review has score=0.).
 // Quiz completion helpers.
 if ( ! function_exists( 'bb_get_quiz_completion_state' ) ) {
-	function bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id = 0 ) { // Returns: 'not-complete' | 'pending' | 'full'.
+	function bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id = 0 ) {
+		// Returns: 'not-complete' | 'pending' | 'full'.
 		if ( ! function_exists( 'learndash_is_quiz_complete' ) ) {
 			return 'not-complete';
 		}
@@ -47,13 +48,15 @@ if ( ! function_exists( 'bb_get_quiz_completion_state' ) ) {
 }
 
 if ( ! function_exists( 'bb_is_quiz_fully_complete' ) ) {
-	function bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id = 0 ) { // Backwards compat returns bool full completion.
+	function bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id = 0 ) {
+		// Backwards compat returns bool full completion.
 		return bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id ) === 'full';
 	}
 }
 
 if ( ! function_exists( 'bb_get_quiz_css_class' ) ) {
-	function bb_get_quiz_css_class( $user_id, $quiz_id, $course_id = 0 ) { // Return CSS class for title span.
+	function bb_get_quiz_css_class( $user_id, $quiz_id, $course_id = 0 ) {
+		// Return CSS class for title span.
 		$state = bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id );
 		if ( 'full' === $state ) {
 			return 'bb-completed-item';
@@ -65,7 +68,8 @@ if ( ! function_exists( 'bb_get_quiz_css_class' ) ) {
 }
 
 if ( ! function_exists( 'bb_get_quiz_status_icon_html' ) ) {
-	function bb_get_quiz_status_icon_html( $user_id, $quiz_id, $course_id = 0 ) { // Return HTML block for status icon.
+	function bb_get_quiz_status_icon_html( $user_id, $quiz_id, $course_id = 0 ) {
+		// Return HTML block for status icon.
 		$state = bb_get_quiz_completion_state( $user_id, $quiz_id, $course_id );
 		if ( 'full' === $state ) {
 			return '<div class="bb-completed bb-lms-status" data-balloon-pos="left" data-balloon="' . esc_attr__( 'Completed', 'buddyboss-theme' ) . '"><div class="i-progress i-progress-completed"><i class="bb-icon-l bb-icon-check"></i></div></div>';
@@ -78,13 +82,15 @@ if ( ! function_exists( 'bb_get_quiz_status_icon_html' ) ) {
 
 // Utility for output classes and labels using bb_is_quiz_fully_complete().
 if ( ! function_exists( 'bb_get_quiz_completion_class' ) ) {
-	function bb_get_quiz_completion_class( $user_id, $quiz_id, $course_id ){ // Return CSS class for quiz completion state.
+	function bb_get_quiz_completion_class( $user_id, $quiz_id, $course_id ) {
+		// Return CSS class for quiz completion state.
 		return bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id ) ? 'bb-completed-item' : 'bb-not-completed-item';
 	}
 }
 
 if ( ! function_exists( 'bb_get_quiz_status_wrapper_class' ) ) {
-	function bb_get_quiz_status_wrapper_class( $user_id, $quiz_id, $course_id ){ // Status wrapper complete or not.
+	function bb_get_quiz_status_wrapper_class( $user_id, $quiz_id, $course_id ) {
+		// Status wrapper complete or not.
 		return bb_is_quiz_fully_complete( $user_id, $quiz_id, $course_id ) ? 'bb-completed' : 'bb-not-completed';
 	}
 }
@@ -103,7 +109,7 @@ $parent_course_link  = $parent_course->guid;
 $parent_course_title = $parent_course->post_title;
 $is_enrolled         = false;
 $current_user_id     = get_current_user_id();
-$user_id            = $current_user_id;
+$user_id             = $current_user_id;
 $get_course_groups   = learndash_get_course_groups( $parent_course->ID );
 $course_id           = $parent_course->ID;
 $admin_enrolled      = LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Section_General_Admin_User', 'courses_autoenroll_admin_users' );
@@ -182,7 +188,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 				<a title="<?php echo esc_attr( $parent_course_title ); ?>" href="<?php echo esc_url( get_permalink( $parent_course->ID ) ); ?>" class="course-entry-link">
 					<span>
 						<i class="bb-icon-l bb-icon-angle-left"></i>
-						<?php echo sprintf( esc_html_x( 'Back to %s', 'link: Back to Course', 'buddyboss-theme' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?>
+						<?php printf( esc_html_x( 'Back to %s', 'link: Back to Course', 'buddyboss-theme' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?>
 					</span>
 				</a>
 				<h2 class="course-entry-title"><?php echo esc_html( $parent_course_title ); ?></h2>
@@ -222,7 +228,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 						$lesson_topics  = learndash_get_topic_list( $lesson->ID, $parent_course->ID );
 						$lesson_quizzes = learndash_get_lesson_quiz_list( $lesson->ID, get_current_user_id(), $course_id );
 						$lesson_sample  = learndash_get_setting( $lesson->ID, 'sample_lesson' ) == 'on' ? 'bb-lms-is-sample' : '';
-						$attributes 	= learndash_get_course_step_attributes( $lesson->ID, $course_id, $user_id );
+						$attributes     = learndash_get_course_step_attributes( $lesson->ID, $course_id, $user_id );
 
 						$is_sample            = ( isset( $lesson->sample ) ? $lesson->sample : false );
 						$bb_lesson_has_access = sfwd_lms_has_access( $lesson->ID, $user_id );
@@ -343,9 +349,9 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 										<ol class="bb-type-list">
 											<?php
 											foreach ( $lesson_topics as $lesson_topic ) {
-												$bb_topic_has_access = sfwd_lms_has_access( $lesson_topic->ID, $user_id );
+												$bb_topic_has_access      = sfwd_lms_has_access( $lesson_topic->ID, $user_id );
 												$learndash_available_date = learndash_course_step_available_date( $lesson_topic->ID, $course_id, $user_id, true );
-												$attributes = learndash_get_course_step_attributes( $lesson_topic->ID, $course_id, $user_id );
+												$attributes               = learndash_get_course_step_attributes( $lesson_topic->ID, $course_id, $user_id );
 												if ( $bb_topic_has_access || ( ! $bb_topic_has_access && apply_filters( 'bb_theme_ld_show_locked_topics', true ) ) ) {
 													?>
 													<li class="lms-topic-item <?php echo $lesson_topic->ID === $post->ID ? esc_attr( 'current' ) : ''; ?> <?php echo ( ! empty( $learndash_available_date ) ) ? 'lms-topic-is-locked' : 'lms-topic-not-locked'; ?>">
@@ -403,7 +409,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 																<?php
 																foreach ( $topic_quizzes as $topic_quiz ) {
 																	$bb_quiz_has_access = sfwd_lms_has_access( $topic_quiz['post']->ID, $user_id );
-																	$attributes = learndash_get_course_step_attributes( $topic_quiz['post']->ID, $course_id, $user_id );
+																	$attributes         = learndash_get_course_step_attributes( $topic_quiz['post']->ID, $course_id, $user_id );
 																	if ( ! empty( $attributes ) && empty( $atts ) ) :
 																		foreach ( $attributes as $attribute ) :
 																			$scheduled_class = $attribute['icon'] == 'ld-icon-calendar' ? 'lms-is-scheduled' : 'lms-not-scheduled';
@@ -451,7 +457,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 											<?php
 											foreach ( $lesson_quizzes as $lesson_quiz ) {
 												$bb_quiz_has_access = sfwd_lms_has_access( $lesson_quiz['post']->ID, $user_id );
-												$attributes = learndash_get_course_step_attributes( $lesson_quiz['post']->ID, $course_id, $user_id );
+												$attributes         = learndash_get_course_step_attributes( $lesson_quiz['post']->ID, $course_id, $user_id );
 												if ( ! empty( $attributes ) && empty( $atts ) ) :
 													foreach ( $attributes as $attribute ) :
 														$scheduled_class = $attribute['icon'] == 'ld-icon-calendar' ? 'lms-is-scheduled' : 'lms-not-scheduled';
@@ -519,7 +525,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 									<span class="bb-quiz-title"><?php echo $course_quiz['post']->post_title; ?></span>
 									<?php echo $atts_access_marker; ?>
 								</span>
-								<?php								
+								<?php
 								if ( isset( $scheduled_class ) && $scheduled_class == 'lms-is-scheduled' ) :
 									?>
 									<span class="lms-quiz-status-icon" data-balloon-pos="left" data-balloon="<?php echo esc_attr( $attribute['label'] ); ?>"><i class="bb-icon-f bb-icon-lock"></i></span>
@@ -578,7 +584,7 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 									?>
 							</li>
 							<?php
-							$count ++;
+							++$count;
 						endforeach;
 						?>
 					</ul>
