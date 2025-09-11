@@ -334,11 +334,12 @@ if ( empty( $course ) ) {
 									if ( ! empty( $external_quiz_meta ) ) {
 										// Add data attributes to the first wpProQuiz_content container for JS interception, including all external quiz data.
 										$attr         = sprintf(
-											' data-ieltssci-external="1" data-ieltssci-external-id="%d" data-ieltssci-external-type="%s" data-ieltssci-question-post-id="%d" data-ieltssci-question-pro-id="%d"',
+											' data-ieltssci-external="1" data-ieltssci-external-id="%d" data-ieltssci-external-type="%s" data-ieltssci-question-post-id="%d" data-ieltssci-question-pro-id="%d" data-ieltssci-course-instructor-id="%d"',
 											(int) $external_quiz_meta['ext_id'],
 											esc_attr( $external_quiz_meta['ext_type'] ),
 											(int) $external_quiz_meta['question_post_id'],
-											(int) $external_quiz_meta['question_pro_id']
+											(int) $external_quiz_meta['question_pro_id'],
+											(int) $author_id
 										);
 										$quiz_content = preg_replace( '/(<div\s+class="wpProQuiz_content")/', '$1' . $attr, $quiz_content, 1 ); // Only first occurrence.
 										do_action( 'ieltssci_external_quiz_detected', $quiz_post->ID, $external_quiz_meta ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Intentional plugin-level action.
