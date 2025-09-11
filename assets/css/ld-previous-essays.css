@@ -84,3 +84,7 @@
 		justify-content: space-between;
 	}
 }
+
+.ld-essay-attempt div.ld-item-list.ld-essay-list {
+	margin: 0px !important;
+}
