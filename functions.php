@@ -385,14 +385,16 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 												$total   = isset( $details['points']['total'] ) ? $details['points']['total'] : null; // Points total.
 												if ( null !== $awarded || null !== $total ) {
 													$label       = ( isset( $details['status'] ) && 'graded' === $details['status'] ) ? esc_html__( 'Teacher Score:', 'learndash' ) : esc_html__( 'AI Score:', 'learndash' );
-													$points_text = $label . ' ' . ( null !== $awarded ? esc_html( $awarded ) : '—' ) . ' / ' . ( null !== $total ? esc_html( $total ) : '—' );
+													$points_text = $label . ' ';
 													if ( null !== $awarded && null !== $total && 0 < $total ) {
 														$percentage   = ( $awarded / $total ) * 100;
 														$ielts        = bb_convert_percentage_to_ielts( $percentage );
-														$points_text .= ' (' . esc_html( number_format( $ielts, 1 ) ) . ')';
+														$points_text .= esc_html( number_format( $percentage, 1 ) ) . '% (' . esc_html( number_format( $ielts, 1 ) ) . ')';
+													} else {
+														$points_text .= '—';
 													}
 													?>
-													<span class="ld-essay__points" title="<?php echo esc_attr__( 'Points Awarded / Total', 'learndash' ); ?>"><?php echo esc_html( $points_text ); ?></span>
+													<span class="ld-essay__points" title="<?php echo esc_attr__( 'Percentage Score (IELTS Band)', 'learndash' ); ?>"><?php echo esc_html( $points_text ); ?></span>
 													<?php
 												}
 												?>
