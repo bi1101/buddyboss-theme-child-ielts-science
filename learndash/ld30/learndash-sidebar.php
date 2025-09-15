@@ -174,6 +174,35 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 		}
 		?>
 
+		<?php
+		// Determine the destination for the back button: Student dashboard manage classes page if group linked, otherwise Course.
+		$back_link_url   = get_permalink( $parent_course->ID ); // Default to course permalink.
+		$back_link_title = $parent_course_title; // Default title.
+
+		$ielts_pages = get_option( 'ielts_science_lms_pages', array() ); // Get IELTS LMS page settings.
+
+		$back_groups = function_exists( 'learndash_get_course_groups' ) ? learndash_get_course_groups( $parent_course->ID ) : array(); // Raw group list for the course.
+		if ( ! empty( $back_groups ) && function_exists( 'buddypress' ) && bp_is_active( 'groups' ) ) {
+			foreach ( (array) $back_groups as $group_post_id ) {
+				$bp_group_id = (int) get_post_meta( $group_post_id, '_sync_group_id', true ); // BuddyBoss/BuddyPress group ID.
+				if ( $bp_group_id && function_exists( 'groups_get_group' ) && function_exists( 'bp_get_group_permalink' ) ) {
+					$bp_group = groups_get_group( (int) $bp_group_id ); // Fetch group object.
+					if ( ! empty( $bp_group ) && ! empty( $bp_group->id ) ) {
+						// Use student dashboard manage classes URL if available, otherwise group permalink.
+						if ( isset( $ielts_pages['student_dashboard'] ) ) {
+							$student_page_id = $ielts_pages['student_dashboard'];
+							$back_link_url   = trailingslashit( get_permalink( $student_page_id ) ) . 'classes/manage/' . $bp_group_id;
+						} else {
+							$back_link_url = bp_get_group_permalink( $bp_group ); // Fallback to group permalink.
+						}
+						$back_link_title = $bp_group->name; // Use group name as title.
+						break; // Use the first valid group.
+					}
+				}
+			}
+		}
+		?>
+
 		<div class="bb-elementor-header-items">
 			<a href="#" id="bb-toggle-theme">
 				<span class="sfwd-dark-mode" data-balloon-pos="down" data-balloon="<?php esc_attr_e( 'Dark Mode', 'buddyboss-theme' ); ?>"><i class="bb-icon-rl bb-icon-moon"></i></span>
@@ -185,10 +214,10 @@ if ( ( isset( $_COOKIE['lessonpanel'] ) && 'closed' === $_COOKIE['lessonpanel'] 
 
 		<div class="lms-topic-sidebar-course-navigation">
 			<div class="ld-course-navigation">
-				<a title="<?php echo esc_attr( $parent_course_title ); ?>" href="<?php echo esc_url( get_permalink( $parent_course->ID ) ); ?>" class="course-entry-link">
+				<a title="<?php echo esc_attr( $back_link_title ); ?>" href="<?php echo esc_url( $back_link_url ); ?>" class="course-entry-link">
 					<span>
 						<i class="bb-icon-l bb-icon-angle-left"></i>
-						<?php printf( esc_html_x( 'Back to %s', 'link: Back to Course', 'buddyboss-theme' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?>
+						<?php echo esc_html__( 'Back to Classes', 'buddyboss-theme' ); ?>
 					</span>
 				</a>
 				<h2 class="course-entry-title"><?php echo esc_html( $parent_course_title ); ?></h2>

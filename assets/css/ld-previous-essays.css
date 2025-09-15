@@ -88,3 +88,7 @@
 .ld-essay-attempt div.ld-item-list.ld-essay-list {
 	margin: 0px !important;
 }
+
+.lms-topic-sidebar-course-navigation a.course-entry-link {
+	line-height: 2;
+}
