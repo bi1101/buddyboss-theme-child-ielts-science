@@ -294,7 +294,7 @@ function bb_render_previous_essays_for_quiz( $quiz_id, $course_id, $user_id ) {
 	?>
 	<div class="ld-previous-essays ld-item-list ld-essay-cards" aria-label="<?php echo esc_attr__( 'Previous essay attempts', 'learndash' ); ?>">
 		<div class="ld-section-heading">
-			<h3 class="ld-heading"><?php echo esc_html__( 'Previous Essay Attempts', 'learndash' ); ?></h3>
+			<h3 class="ld-heading"><?php echo esc_html__( 'Previous Attempts', 'learndash' ); ?></h3>
 		</div>
 
 		<?php foreach ( $attempts_for_quiz as $attempt ) : ?>
