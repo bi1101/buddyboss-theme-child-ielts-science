@@ -35,7 +35,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-global $post, $user_id;
+global $post, $user_ID;
+
+$user_id = $user_ID;
 
 // Initialize required variables for template functionality.
 $lesson_data = $post;
