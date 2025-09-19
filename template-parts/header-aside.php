@@ -8,6 +8,75 @@ $profile_dropdown   = buddyboss_theme_get_option( 'profile_dropdown' );
 $is_lms_inner       = ( class_exists( 'SFWD_LMS' ) && buddyboss_is_learndash_inner() ) || ( class_exists( 'LifterLMS' ) && buddypanel_is_lifterlms_inner() );
 ?>
 
+<?php
+// Helpers to determine user's primary role and display label.
+if ( ! function_exists( 'ieltssci_get_role_label' ) ) {
+	/**
+	 * Maps a WordPress user role to a display label.
+	 *
+	 * @param string $role Role slug.
+	 * @return string Label for display.
+	 */
+	function ieltssci_get_role_label( $role ) {
+		$map = array(
+			'administrator'      => 'Admin',
+			'learner_subscriber' => 'Learner',
+			'plus_subscriber'    => 'Student',
+			'premium_subscriber' => 'Teacher',
+			'vip_subscriber'     => 'VIP',
+			'editor'             => 'Editor',
+			'author'             => 'Author',
+			'contributor'        => 'Contributor',
+			'subscriber'         => 'Free',
+			'teacher'            => 'Teacher',
+			'student'            => 'Student',
+		);
+
+		if ( isset( $map[ $role ] ) ) {
+			return $map[ $role ];
+		}
+
+		return $role ? ucfirst( $role ) : '';
+	}
+}
+
+if ( ! function_exists( 'ieltssci_get_primary_role' ) ) {
+	/**
+	 * Gets the primary role to display for a user with multiple roles.
+	 *
+	 * @param array $roles List of role slugs.
+	 * @return string Primary role slug.
+	 */
+	function ieltssci_get_primary_role( $roles ) {
+		if ( empty( $roles ) || ! is_array( $roles ) ) {
+			return '';
+		}
+
+		$priority = array(
+			'administrator',
+			'learner_subscriber',
+			'plus_subscriber',
+			'premium_subscriber',
+			'vip_subscriber',
+			'editor',
+			'teacher',
+			'author',
+			'contributor',
+			'student',
+			'subscriber',
+		);
+
+		foreach ( $priority as $role ) {
+			if ( in_array( $role, $roles, true ) ) {
+				return $role;
+			}
+		}
+
+		return (string) reset( $roles );
+	}
+}
+?>
+
 <div id="header-aside" class="header-aside <?php echo esc_attr( $profile_dropdown ); ?>">
 	<div class="header-aside-inner">
 
@@ -57,8 +126,24 @@ $is_lms_inner       = ( class_exists( 'SFWD_LMS' ) && buddyboss_is_learndash_inn
 						<?php
 						if ( 'name_and_avatar' === $profile_dropdown ) {
 							?>
-							<?php echo do_shortcode( '[elementor-template id="115"]' ); ?>
 							<span class="user-name"><?php echo esc_html( $display_name ); ?></span><i class="bb-icon-l bb-icon-angle-down"></i>
+							<?php
+							$user_roles   = is_array( $current_user->roles ) ? $current_user->roles : array();
+							$primary_role = ieltssci_get_primary_role( $user_roles );
+							if ( $primary_role ) {
+								$role_label = ieltssci_get_role_label( $primary_role );
+								$role_class = 'bb-role-badge';
+								// Check if WooCommerce Subscriptions is active and user has active subscription.
+								$has_subscription_active = false;
+								if ( class_exists( 'WC_Subscriptions' ) && function_exists( 'wcs_user_has_subscription' ) ) {
+									$has_subscription_active = wcs_user_has_subscription( $current_user->ID, 0, 'active' );
+								}
+								if ( $has_subscription_active ) {
+									$role_class .= ' subscription-active';
+								}
+								echo '<div class="' . esc_attr( $role_class ) . '"><span class="bb-role-label">' . esc_html( $role_label ) . '</span></div>';
+							}
+							?>
 							<?php
 						}
 						echo get_avatar( get_current_user_id(), 100 );

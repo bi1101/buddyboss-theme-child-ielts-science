@@ -133,7 +133,23 @@ $logo_class         = ( $logo_align <= 1 && ( ! buddyboss_is_learndash_inner() &
 				?>
 				<div class="user-wrap">
 					<a href="<?php echo esc_url( $user_link ); ?>"><?php echo get_avatar( $current_user->ID, 100 ); ?></a>
-					<?php echo do_shortcode( '[elementor-template id="115"]' ); ?>
+					<?php
+						$user_roles   = is_array( $current_user->roles ) ? $current_user->roles : array();
+						$primary_role = ieltssci_get_primary_role( $user_roles );
+					if ( $primary_role ) {
+						$role_label = ieltssci_get_role_label( $primary_role );
+						$role_class = 'bb-role-badge';
+						// Check if WooCommerce Subscriptions is active and user has active subscription.
+						$has_subscription_active = false;
+						if ( class_exists( 'WC_Subscriptions' ) && function_exists( 'wcs_user_has_subscription' ) ) {
+							$has_subscription_active = wcs_user_has_subscription( $current_user->ID, 0, 'active' );
+						}
+						if ( $has_subscription_active ) {
+							$role_class .= ' subscription-active';
+						}
+						echo '<div class="' . esc_attr( $role_class ) . '"><span class="bb-role-label">' . esc_html( $role_label ) . '</span></div>';
+					}
+					?>
 					<div>
 						<a href="<?php echo esc_url( $user_link ); ?>">
 							<span class="user-name"><?php echo esc_html( $display_name ); ?></span>
