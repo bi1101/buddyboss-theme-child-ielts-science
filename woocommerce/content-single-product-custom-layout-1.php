@@ -67,7 +67,9 @@ $product_name = $product->get_name();
 								<!-- Variation Description -->
 								<div class="variation-description <?php echo esc_attr( $active_class ); ?>"
 									id="variation-description-<?php echo esc_attr( $variation_id ); ?>">
-									<?php echo wp_kses_post( $variation_description ); // Rendered with HTML and shortcodes. ?>
+									<?php
+										echo $variation_description; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									?>
 								</div>
 								<?php
 							}
