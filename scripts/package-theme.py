@@ -6,7 +6,8 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
-THEME = ROOT.name
+# The checkout directory can differ from the WordPress theme slug.
+THEME = "buddyboss-theme-child"
 ARCHIVE = DIST / f"{THEME}.zip"
 EXCLUDED_DIRS = {".git", ".github", "node_modules", "tests", "test", "dist", "scripts"}
 EXCLUDED_SUFFIXES = {".map"}
