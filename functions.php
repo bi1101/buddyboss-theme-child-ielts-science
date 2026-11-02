@@ -431,3 +431,34 @@ function bb_ld_status_bubble_not_pass( $bubble, $status ) {
 	}
 	return $bubble;
 }
+
+function redirect_non_admins() {
+	// Let admins pass through early.
+	if ( current_user_can( 'manage_options' ) ) {
+		return; // Admins are allowed in.
+	}
+
+	// Allow AJAX.
+	if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+		return; // AJAX requests are allowed.
+	}
+
+	// Allow the admin-post handlers that process the invite actions.
+	global $pagenow;
+	if ( 'admin-post.php' === $pagenow ) {
+		$allowed_actions = array(
+			'accept_group_invite',
+			'reject_group_invite',
+		);
+
+		$action = isset( $_GET['action'] ) ? sanitize_key( $_GET['action'] ) : '';
+		if ( in_array( $action, $allowed_actions, true ) ) {
+			return; // Let the plugin handlers run for these actions.
+		}
+	}
+
+	// For all other non-admin cases, redirect away from wp-admin.
+	wp_safe_redirect( home_url() );
+	exit;
+}
+add_action( 'admin_init', 'redirect_non_admins', 1 );

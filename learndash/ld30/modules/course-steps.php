@@ -58,6 +58,20 @@ if ( 'sfwd-topic' === $course_step_post->post_type ) {
 	$current_complete = learndash_is_lesson_complete( $user_id, $course_step_post->ID, $course_id );
 }
 
+$tracked_completion_required = true;
+if ( class_exists( '\\IeltsScienceLMS\\Classroom\\LDIntegration\\Ieltssci_LD_Completion_Policy' ) ) {
+	$completion_policy = new \IeltsScienceLMS\Classroom\LDIntegration\Ieltssci_LD_Completion_Policy();
+
+	if ( in_array( $course_step_post->post_type, learndash_get_post_type_slug( array( 'lesson', 'topic' ) ), true ) ) {
+		$tracked_completion_required = $completion_policy->has_tracked_completion_requirements( $course_step_post->ID, $course_id );
+		$current_complete            = $completion_policy->is_step_effectively_complete( $user_id, $course_step_post->ID, $course_id );
+
+		if ( ! $tracked_completion_required ) {
+			$can_complete = false;
+		}
+	}
+}
+
 if ( learndash_lesson_hasassignments( $course_step_post ) ) {
 	$user_assignments = learndash_get_user_assignments( $course_step_post->ID, $user_id, absint( $course_id ), 'ids' );
 	if ( function_exists( 'learndash_assignment_list_approved' ) ) {
@@ -156,6 +170,11 @@ if ( ! empty( $parent_lesson_id ) ) {
 if ( ( true === $current_complete ) && ( is_a( $course_step_post, 'WP_Post' ) ) ) {
 	$incomplete_button = learndash_show_mark_incomplete( $course_step_post );
 } else {
+	$incomplete_button = '';
+}
+
+if ( ! $tracked_completion_required ) {
+	$complete_button   = '';
 	$incomplete_button = '';
 }
 

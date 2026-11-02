@@ -1,0 +1,8 @@
+{
+  "name": "buddyboss-theme-child-ielts-science-release",
+  "private": true,
+  "scripts": {
+    "package": "python scripts/package-theme.py package",
+    "validate": "python scripts/package-theme.py validate"
+  }
+}
