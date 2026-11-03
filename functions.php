@@ -62,3 +62,53 @@ function studyieltsvn_setup_design() {
 }
 // Run after BuddyBoss registers its Custom Fonts post type, including existing child-theme installs.
 add_action( 'init', 'studyieltsvn_setup_design', 20 );
+
+/**
+ * Keep BuddyBoss's site chrome from styling the React shell.
+ *
+ * @return void
+ */
+function studyieltsvn_dequeue_shell_theme_assets() {
+	if ( ! apply_filters( 'ieltssci_is_shell_request', false ) ) {
+		return;
+	}
+
+	foreach ( array(
+		'bb_theme_block-buddypanel-style-css',
+		'buddyboss-theme-buddypress',
+		'buddyboss-theme-css',
+		'buddyboss-theme-fonts',
+		'buddyboss-theme-icons-map',
+		'buddyboss-theme-icons',
+		'buddyboss-theme-magnific-popup-css',
+		'buddyboss-theme-select2-css',
+		'buddyboss-theme-template',
+		'buddyboss-theme-woocommerce',
+		'buddyboss-theme-forums',
+		'buddyboss-theme-plugins',
+		'buddyboss_legacy',
+		'redux-extendify-styles',
+	) as $handle ) {
+		wp_dequeue_style( $handle );
+	}
+
+	foreach ( array(
+		'buddyboss-theme-cookie-js',
+		'boss-menu-js',
+		'boss-fitvids-js',
+		'boss-slick-js',
+		'boss-panelslider-js',
+		'boss-sticky-js',
+		'boss-jssocials-js',
+		'buddyboss-theme-main-js',
+		'boss-validate-js',
+		'bp-nouveau-magnific-popup',
+		'select2-js',
+		'progressbar-js',
+		'mousewheel-js',
+		'buddyboss-theme-woocommerce-js',
+	) as $handle ) {
+		wp_dequeue_script( $handle );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'studyieltsvn_dequeue_shell_theme_assets', 999 );
