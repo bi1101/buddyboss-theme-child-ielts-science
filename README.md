@@ -17,7 +17,7 @@ git push origin v1.0.0
 
 GitHub Actions creates `buddyboss-theme-child.zip` and its SHA-256 checksum in the release. The stable public URL is:
 
-`https://github.com/bi1101/buddyboss-theme-child-ielts-science/releases/latest/download/buddyboss-theme-child.zip`
+`https://github.com/bi1101/buddyboss-theme-child-ielts-science/releases/download/v1.0.4/buddyboss-theme-child.zip`
 
 Use it in wp-env after the parent theme is available:
 
@@ -25,7 +25,7 @@ Use it in wp-env after the parent theme is available:
 services:
   wordpress:
     themes:
-      - https://github.com/bi1101/buddyboss-theme-child-ielts-science/releases/latest/download/buddyboss-theme-child.zip
+      - https://github.com/bi1101/buddyboss-theme-child-ielts-science/releases/download/v1.0.4/buddyboss-theme-child.zip
 ```
 
 GitHub Releases must be public for wp-env to download the URL. The `latest` URL does not select prereleases.
