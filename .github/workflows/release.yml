@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+      - 'studyieltsvn-v*.*.*'
   workflow_dispatch:
 
 permissions:

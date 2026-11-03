@@ -32,7 +32,7 @@ def validate():
     with zipfile.ZipFile(ARCHIVE) as archive:
         names = set(archive.namelist())
         prefix = f"{THEME}/"
-        required = {f"{prefix}style.css", f"{prefix}functions.php"}
+        required = {f"{prefix}style.css"}
         if not required <= names:
             raise SystemExit(f"Missing required files: {sorted(required - names)}")
         if any(not name.startswith(prefix) for name in names):

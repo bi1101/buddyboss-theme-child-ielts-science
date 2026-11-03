@@ -1,6 +1,6 @@
 # IELTS Science BuddyBoss child theme
 
-This child theme is packaged as an installable WordPress theme ZIP for wp-env. It requires the BuddyBoss parent theme to be installed separately.
+This child theme is packaged as an installable WordPress theme ZIP for wp-env. It requires the BuddyBoss parent theme to be installed separately. The `studyieltsvn` branch is intentionally a bare child theme with no template, PHP, CSS, JavaScript, or WooCommerce overrides.
 
 ## Package locally
 
