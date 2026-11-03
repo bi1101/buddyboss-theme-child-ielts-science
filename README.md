@@ -1,6 +1,6 @@
 # IELTS Science BuddyBoss child theme
 
-This child theme is packaged as an installable WordPress theme ZIP for wp-env. It requires the BuddyBoss parent theme to be installed separately. The `studyieltsvn` branch bundles the MUI light palette and typography through native BuddyBoss options and Custom Fonts. It has no template, CSS, JavaScript, or WooCommerce overrides.
+This child theme is packaged as an installable WordPress theme ZIP for wp-env. It requires the BuddyBoss parent theme to be installed separately. The `studyieltsvn` branch bundles the MUI light palette and typography through native BuddyBoss options and Custom Fonts. It has no template overrides or JavaScript customizations.
 
 
 ## Design setup
@@ -14,6 +14,18 @@ Only the listed visual options change. Existing font sizes, logos, menus, layout
 Setup runs once per site. Later edits in BuddyBoss Theme Options or Custom Fonts survive page loads, theme reactivation, and updates. Existing BuddyBoss options are backed up in the `studyieltsvn_design_options_backup` WordPress option before the initial change. Deactivation does not restore that backup or remove fonts; keep the child theme files installed while its fonts are selected. To deliberately reapply the preset, delete the `studyieltsvn_design_installed` option with WP-CLI, then load the site with this child theme active.
 
 The preset targets BuddyBoss settings; WooCommerce Blocks and other plugins can supply their own styles. It does not recreate the MUI component system or add a dark mode.
+
+## Virtual checkout
+
+For nonempty carts containing only products marked **Virtual**, the child theme removes company, street, apartment, city, state, and postcode fields through WooCommerce locale metadata. These fields are also excluded from required-field validation in the Store API. A small checkout-only CSS rule hides the country selector while preserving WooCommerce's existing country value for its locale and Store API validation.
+
+Blank billing first/last names prefill from the current account profile. Explicit billing names and guest customers are left intact. Email and optional phone remain available. Products must be marked Virtual in WooCommerce; mixed/physical carts keep normal address requirements. This customization is independent of the one-time design setup.
+
+To verify with WooCommerce active on a disposable site:
+
+```sh
+wp eval-file wp-content/themes/buddyboss-theme-child/tests/virtual-checkout.php
+```
 
 ## Verify locally
 

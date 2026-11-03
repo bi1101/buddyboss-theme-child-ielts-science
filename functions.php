@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/inc/virtual-checkout.php';
+
 /** Apply the bundled design once; subsequent edits belong to the site owner. */
 function studyieltsvn_setup_design() {
 	if ( get_option( 'studyieltsvn_design_installed' ) ) {
