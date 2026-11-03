@@ -58,5 +58,5 @@ function studyieltsvn_setup_design() {
 	delete_transient( 'buddyboss_theme_compressed_custom_css' );
 	add_option( 'studyieltsvn_design_installed', true, '', false );
 }
-// Theme activation loads this file after after_switch_theme, so apply on the first setup request.
-add_action( 'after_setup_theme', 'studyieltsvn_setup_design', 20 );
+// Run after BuddyBoss registers its Custom Fonts post type, including existing child-theme installs.
+add_action( 'init', 'studyieltsvn_setup_design', 20 );
