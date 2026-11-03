@@ -17,9 +17,9 @@ The preset targets BuddyBoss settings; WooCommerce Blocks and other plugins can 
 
 ## Virtual checkout
 
-For nonempty carts containing only products marked **Virtual**, the child theme removes company, street, apartment, city, state, and postcode fields through WooCommerce locale metadata. These fields are also excluded from required-field validation in the Store API. A small checkout-only CSS rule hides the country selector while preserving WooCommerce's existing country value for its locale and Store API validation.
+For nonempty carts containing only products marked **Virtual**, the child theme removes company, street, apartment, city, state, and postcode fields through WooCommerce locale metadata. These fields are also excluded from required-field validation in the Store API. A small checkout-only CSS rule hides the country selector while preserving WooCommerce's country value for its locale and Store API validation. A blank country falls back to the shop base country only when that country is allowed; if no valid country is available, the selector stays visible. This uses the shop country as the checkout default, not as a determination of the customer's actual location.
 
-Blank billing first/last names prefill from the current account profile. Explicit billing names and guest customers are left intact. Email and optional phone remain available. Products must be marked Virtual in WooCommerce; mixed/physical carts keep normal address requirements. This customization is independent of the one-time design setup.
+Blank billing first/last names prefill from the current account profile. Explicit billing names and guest customers are left intact. Email and optional phone remain available. Products must be marked Virtual in WooCommerce; mixed/physical carts keep normal address requirements. This customization is independent of the one-time design setup. Address rules and name defaults apply only on checkout pages and Store API cart/checkout requests; account address editing retains its normal requirements.
 
 To verify with WooCommerce active on a disposable site:
 
