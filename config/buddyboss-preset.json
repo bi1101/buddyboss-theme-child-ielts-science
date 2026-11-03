@@ -1,0 +1,152 @@
+{
+  "accent_color": "#FF0000",
+  "body_background": "#FFFFFF",
+  "body_blocks": "#FFFFFF",
+  "light_background_blocks": "#F5F5F5",
+  "body_blocks_border": "#E0E0E0",
+  "heading_text_color": "#212121",
+  "body_text_color": "#212121",
+  "alternate_text_color": "#666666",
+  "primary_button_background": {
+    "regular": "#FF0000",
+    "hover": "#F10000",
+    "active": false
+  },
+  "primary_button_border": {
+    "regular": "#FF0000",
+    "hover": "#F10000",
+    "active": false
+  },
+  "primary_button_text_color": {
+    "regular": "#FFFFFF",
+    "hover": "#FFFFFF",
+    "active": false
+  },
+  "secondary_button_background": {
+    "regular": "#2C406C",
+    "hover": "#1D2747",
+    "active": false
+  },
+  "secondary_button_border": {
+    "regular": "#2C406C",
+    "hover": "#1D2747",
+    "active": false
+  },
+  "secondary_button_text_color": {
+    "regular": "#FFFFFF",
+    "hover": "#FFFFFF",
+    "active": false
+  },
+  "header_background": "#ffffff",
+  "header_alternate_background": "#F5F5F5",
+  "header_links": "#212121",
+  "header_links_hover": "#FF0000",
+  "sidenav_background": "#ffffff",
+  "sidenav_text_color": {
+    "regular": "#212121",
+    "hover": "#212121",
+    "active": "#ffffff"
+  },
+  "sidenav_menu_background_color": {
+    "regular": "#FFFFFF",
+    "hover": "#F5F5F5",
+    "active": "#FF0000"
+  },
+  "sidenav_count_text_color": {
+    "regular": "#212121",
+    "hover": "#FFFFFF",
+    "active": "#FF0000"
+  },
+  "sidenav_count_background_color": {
+    "regular": "#F5F5F5",
+    "hover": "#FF0000",
+    "active": "#FFFFFF"
+  },
+  "footer_background": "#F5F5F5",
+  "footer_widget_background": "#F5F5F5",
+  "footer_text_color": "#212121",
+  "footer_menu_link_color": {
+    "regular": "#212121",
+    "hover": "#FF0000",
+    "active": "#212121"
+  },
+  "admin_screen_bgr_color": "#FFFFFF",
+  "admin_screen_txt_color": "#212121",
+  "login_register_link_color": {
+    "regular": "#212121",
+    "hover": "#F10000",
+    "active": false
+  },
+  "login_register_button_background_color": {
+    "regular": "#FF0000",
+    "hover": "#F10000",
+    "active": false
+  },
+  "login_register_button_border_color": {
+    "regular": "#FF0000",
+    "hover": "#F10000",
+    "active": false
+  },
+  "login_register_button_text_color": {
+    "regular": "#FFFFFF",
+    "hover": "#FFFFFF",
+    "active": false
+  },
+  "label_background_color": "#FFE7E6",
+  "label_text_color": "#FF0000",
+  "tooltip_background": "#212121",
+  "tooltip_color": "#ffffff",
+  "default_notice_bg_color": "#03A9F4",
+  "success_notice_bg_color": "#009026",
+  "warning_notice_bg_color": "#FF5500",
+  "error_notice_bg_color": "#E41625",
+  "custom_typography": "1",
+  "boss_site_title_font_family": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_body_font_family": {
+    "font-family": "Linotte",
+    "font-weight": "400",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_h1_font_options": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_h2_font_options": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_h3_font_options": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_h4_font_options": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_h5_font_options": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  },
+  "boss_h6_font_options": {
+    "font-family": "Baloo Bhaina",
+    "font-weight": "600",
+    "google": "false",
+    "font-style": "normal"
+  }
+}
