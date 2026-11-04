@@ -15,6 +15,17 @@ class Studyieltsvn_Woo_Checkout {
 		add_filter( 'woocommerce_customer_get_billing_country', array( $this, 'billing_country' ) );
 		add_action( 'woocommerce_store_api_checkout_update_order_meta', array( $this, 'order_country' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'hide_country_selector' ), 20 );
+		add_action( 'template_redirect', array( $this, 'redirect_empty_checkout' ), 5 );
+	}
+
+	/** Send empty-checkout visits to the shop instead of showing an empty cart. */
+	public function redirect_empty_checkout() {
+		if ( is_admin() || wp_doing_ajax() || ! function_exists( 'is_checkout' ) || ! is_checkout() || is_order_received_page() || ! function_exists( 'WC' ) || ! WC()->cart || ! WC()->cart->is_empty() ) {
+			return;
+		}
+
+		wp_safe_redirect( wc_get_page_permalink( 'shop' ) );
+		exit;
 	}
 
 	private function is_virtual_cart() {
