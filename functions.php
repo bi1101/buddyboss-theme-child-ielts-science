@@ -1,6 +1,18 @@
 <?php
 require_once __DIR__ . '/inc/virtual-checkout.php';
 
+/** Load the child stylesheet for the site's theme-level WooCommerce overrides. */
+function studyieltsvn_enqueue_child_styles() {
+	$stylesheet = get_stylesheet_directory() . '/style.css';
+	wp_enqueue_style(
+		'studyieltsvn-child',
+		get_stylesheet_uri(),
+		array(),
+		file_exists( $stylesheet ) ? (string) filemtime( $stylesheet ) : null
+	);
+}
+add_action( 'wp_enqueue_scripts', 'studyieltsvn_enqueue_child_styles', 20 );
+
 /** Apply the bundled design once; subsequent edits belong to the site owner. */
 function studyieltsvn_setup_design() {
 	if ( get_option( 'studyieltsvn_design_installed' ) ) {

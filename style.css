@@ -10,6 +10,92 @@ Template: 		buddyboss-theme
 Version: 		1.2.0
 */
 
+/* Match the native Woo checkout action to the MUI raised-button treatment. */
+.wc-block-components-checkout-place-order-button {
+	--studyieltsvn-button-depth: 4px;
+	--studyieltsvn-button-face: #f8ae1a;
+	--studyieltsvn-button-depth-color: #ff8f00;
+	position: relative;
+	isolation: isolate;
+	min-height: 52px !important;
+	box-sizing: border-box;
+	padding: 8px 22px !important;
+	border: 0 !important;
+	border-radius: 16px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	color: #fff !important;
+	font-family: Linotte, Arial, sans-serif !important;
+	font-size: 15px !important;
+	font-weight: 500 !important;
+	line-height: 26.25px !important;
+	transform: none !important;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.wc-block-components-checkout-place-order-button::before,
+.wc-block-components-checkout-place-order-button::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+}
+
+.wc-block-components-checkout-place-order-button::before {
+	top: 0;
+	bottom: auto;
+	height: calc(100% - var(--studyieltsvn-button-depth));
+	transform: translateY(var(--studyieltsvn-button-depth));
+	background: var(--studyieltsvn-button-depth-color);
+	z-index: 0;
+}
+
+.wc-block-components-checkout-place-order-button::after {
+	bottom: var(--studyieltsvn-button-depth);
+	background-color: var(--studyieltsvn-button-face);
+	z-index: 1;
+}
+
+.wc-block-components-checkout-place-order-button > .wc-block-components-button__text {
+	position: relative;
+	z-index: 2;
+	transform: translateY(calc(var(--studyieltsvn-button-depth) / -2));
+	transition: transform 120ms ease-out;
+}
+
+@media (hover: hover) {
+	.wc-block-components-checkout-place-order-button:hover:not(:active)::after {
+		transform: translateY(1.5px);
+	}
+
+	.wc-block-components-checkout-place-order-button:hover:not(:active) > .wc-block-components-button__text {
+		transform: translateY(calc((var(--studyieltsvn-button-depth) / -2) + 1.5px));
+	}
+}
+
+.wc-block-components-checkout-place-order-button:active::after {
+	transform: translateY(var(--studyieltsvn-button-depth));
+	transition: transform 60ms ease-out;
+}
+
+.wc-block-components-checkout-place-order-button:active > .wc-block-components-button__text {
+	transform: translateY(calc(var(--studyieltsvn-button-depth) / 2));
+	transition-duration: 60ms;
+}
+
+.wc-block-components-checkout-place-order-button:focus-visible {
+	outline: 3px solid #f8ae1a !important;
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wc-block-components-checkout-place-order-button::after,
+	.wc-block-components-checkout-place-order-button > .wc-block-components-button__text {
+		transition: none;
+	}
+}
+
 /*
 
 -- Stylesheet locations --
