@@ -180,6 +180,31 @@ Version: 		1.2.0
 	background: #f10000 !important;
 }
 
+.wp-block-woocommerce-empty-cart-block > p a {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	box-sizing: border-box;
+	padding: 8px 22px;
+	border-radius: 16px;
+	background: #ff0000 !important;
+	color: #ffffff !important;
+	font-family: Linotte, Arial, sans-serif !important;
+	font-weight: 500;
+	line-height: 26px;
+	text-decoration: none;
+}
+
+.wp-block-woocommerce-empty-cart-block > p a:hover {
+	background: #f10000 !important;
+}
+
+.wp-block-woocommerce-empty-cart-block > p a:focus-visible {
+	outline: 3px solid #ff0000;
+	outline-offset: 3px;
+}
+
 /* The classic product button has a raw text node, so it cannot sit above pseudo-layers. */
 body.woocommerce-page .single_add_to_cart_button {
 	background: #f8ae1a !important;
