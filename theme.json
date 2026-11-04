@@ -1,0 +1,61 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"color": {
+			"defaultPalette": false,
+			"palette": [
+				{ "slug": "primary", "name": "Primary", "color": "#FF0000" },
+				{ "slug": "primary-dark", "name": "Primary dark", "color": "#F10000" },
+				{ "slug": "secondary", "name": "Secondary", "color": "#2C406C" },
+				{ "slug": "secondary-dark", "name": "Secondary dark", "color": "#1D2747" },
+				{ "slug": "accent-yellow", "name": "Accent yellow", "color": "#F8AE1A" },
+				{ "slug": "paper", "name": "Paper", "color": "#FFFFFF" },
+				{ "slug": "text", "name": "Text", "color": "#212121" }
+			]
+		},
+		"layout": {
+			"contentSize": "1200px",
+			"wideSize": "1440px"
+		},
+		"spacing": {
+			"units": [ "px", "rem", "%" ]
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"fontFamily": "Linotte, Arial, sans-serif",
+					"slug": "body",
+					"name": "Linotte"
+				},
+				{
+					"fontFamily": "Baloo Bhaina 2, Linotte, sans-serif",
+					"slug": "heading",
+					"name": "Baloo Bhaina 2"
+				}
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "#FFFFFF",
+			"text": "#212121"
+		},
+		"typography": {
+			"fontFamily": "Linotte, Arial, sans-serif"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "Baloo Bhaina 2, Linotte, sans-serif"
+				}
+			},
+			"button": {
+				"border": {
+					"radius": "16px"
+				}
+			}
+		}
+	}
+}
