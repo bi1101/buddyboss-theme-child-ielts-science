@@ -192,7 +192,7 @@ Version: 		1.2.0
 	color: #ffffff !important;
 	font-family: Linotte, Arial, sans-serif !important;
 	font-weight: 500;
-	line-height: 26px;
+	line-height: 36px !important;
 	text-decoration: none;
 }
 
@@ -230,6 +230,10 @@ body.woocommerce-page .single_add_to_cart_button::after {
 
 /* The empty-cart recommendation link also uses a raw text node. */
 body.woocommerce-page a.wp-block-button__link.add_to_cart_button {
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	line-height: normal !important;
 	background: #f8ae1a !important;
 	box-shadow: 0 4px 0 #ff8f00 !important;
 	transform: none !important;
