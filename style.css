@@ -228,6 +228,29 @@ body.woocommerce-page .single_add_to_cart_button::after {
 	display: none;
 }
 
+/* The empty-cart recommendation link also uses a raw text node. */
+body.woocommerce-page a.wp-block-button__link.add_to_cart_button {
+	background: #f8ae1a !important;
+	box-shadow: 0 4px 0 #ff8f00 !important;
+	transform: none !important;
+	transition: transform 120ms ease-out, box-shadow 120ms ease-out !important;
+}
+
+body.woocommerce-page a.wp-block-button__link.add_to_cart_button:hover:not(:active) {
+	transform: translateY(1.5px) !important;
+	box-shadow: 0 2.5px 0 #ff8f00 !important;
+}
+
+body.woocommerce-page a.wp-block-button__link.add_to_cart_button:active {
+	transform: translateY(4px) !important;
+	box-shadow: none !important;
+}
+
+body.woocommerce-page a.wp-block-button__link.add_to_cart_button::before,
+body.woocommerce-page a.wp-block-button__link.add_to_cart_button::after {
+	display: none;
+}
+
 /*
 
 -- Stylesheet locations --
