@@ -11,7 +11,12 @@ Version: 		1.2.0
 */
 
 /* Match the native Woo checkout action to the MUI raised-button treatment. */
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button) {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+) {
 	--studyieltsvn-button-depth: 4px;
 	--studyieltsvn-button-face: #f8ae1a;
 	--studyieltsvn-button-depth-color: #ff8f00;
@@ -34,8 +39,18 @@ Version: 		1.2.0
 	text-decoration: none;
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button)::before,
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button)::after {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+)::before,
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+)::after {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -43,7 +58,12 @@ Version: 		1.2.0
 	pointer-events: none;
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button)::before {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+)::before {
 	top: 0;
 	bottom: auto;
 	height: calc(100% - var(--studyieltsvn-button-depth));
@@ -52,13 +72,23 @@ Version: 		1.2.0
 	z-index: 0;
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button)::after {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+)::after {
 	bottom: var(--studyieltsvn-button-depth);
 	background-color: var(--studyieltsvn-button-face);
 	z-index: 1;
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button) > .wc-block-components-button__text {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+) > .wc-block-components-button__text {
 	position: relative;
 	z-index: 2;
 	transform: translateY(calc(var(--studyieltsvn-button-depth) / -2));
@@ -66,35 +96,88 @@ Version: 		1.2.0
 }
 
 @media (hover: hover) {
-	:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button):hover:not(:active)::after {
+	:is(
+		.wc-block-components-checkout-place-order-button,
+		.wc-block-cart__submit-button,
+		.single_add_to_cart_button,
+		a.wp-block-button__link.add_to_cart_button
+	):hover:not(:active)::after {
 		transform: translateY(1.5px);
 	}
 
-	:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button):hover:not(:active) > .wc-block-components-button__text {
+	:is(
+		.wc-block-components-checkout-place-order-button,
+		.wc-block-cart__submit-button,
+		.single_add_to_cart_button,
+		a.wp-block-button__link.add_to_cart_button
+	):hover:not(:active) > .wc-block-components-button__text {
 		transform: translateY(calc((var(--studyieltsvn-button-depth) / -2) + 1.5px));
 	}
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button):active::after {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+):active::after {
 	transform: translateY(var(--studyieltsvn-button-depth));
 	transition: transform 60ms ease-out;
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button):active > .wc-block-components-button__text {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+):active > .wc-block-components-button__text {
 	transform: translateY(calc(var(--studyieltsvn-button-depth) / 2));
 	transition-duration: 60ms;
 }
 
-:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button):focus-visible {
+:is(
+	.wc-block-components-checkout-place-order-button,
+	.wc-block-cart__submit-button,
+	.single_add_to_cart_button,
+	a.wp-block-button__link.add_to_cart_button
+):focus-visible {
 	outline: 3px solid #f8ae1a !important;
 	outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button)::after,
-	:is(.wc-block-components-checkout-place-order-button, .wc-block-cart__submit-button) > .wc-block-components-button__text {
+	:is(
+		.wc-block-components-checkout-place-order-button,
+		.wc-block-cart__submit-button,
+		.single_add_to_cart_button,
+		a.wp-block-button__link.add_to_cart_button
+	)::after,
+	:is(
+		.wc-block-components-checkout-place-order-button,
+		.wc-block-cart__submit-button,
+		.single_add_to_cart_button,
+		a.wp-block-button__link.add_to_cart_button
+	) > .wc-block-components-button__text {
 		transition: none;
 	}
+}
+
+/* Woo's generic block actions use the MUI primary token instead of its dark default. */
+:is(
+	.wc-block-components-totals-coupon__button,
+	.wc-block-components-shipping-calculator-address__button
+) {
+	border-radius: 16px !important;
+	background: #ff0000 !important;
+	color: #ffffff !important;
+	font-family: Linotte, Arial, sans-serif !important;
+}
+
+:is(
+	.wc-block-components-totals-coupon__button,
+	.wc-block-components-shipping-calculator-address__button
+):hover {
+	background: #f10000 !important;
 }
 
 /*

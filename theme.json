@@ -52,6 +52,10 @@
 				}
 			},
 			"button": {
+				"color": {
+					"background": "var:preset|color|primary",
+					"text": "#FFFFFF"
+				},
 				"border": {
 					"radius": "16px"
 				}
