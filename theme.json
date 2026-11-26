@@ -6,10 +6,10 @@
 		"color": {
 			"defaultPalette": false,
 			"palette": [
-				{ "slug": "primary", "name": "Primary", "color": "#FF0000" },
-				{ "slug": "primary-dark", "name": "Primary dark", "color": "#F10000" },
-				{ "slug": "secondary", "name": "Secondary", "color": "#2C406C" },
-				{ "slug": "secondary-dark", "name": "Secondary dark", "color": "#1D2747" },
+				{ "slug": "primary", "name": "Primary", "color": "#1DB0F6" },
+				{ "slug": "primary-dark", "name": "Primary dark", "color": "#0A8CC8" },
+				{ "slug": "secondary", "name": "Secondary", "color": "#006891" },
+				{ "slug": "secondary-dark", "name": "Secondary dark", "color": "#004A67" },
 				{ "slug": "accent-yellow", "name": "Accent yellow", "color": "#F8AE1A" },
 				{ "slug": "paper", "name": "Paper", "color": "#FFFFFF" },
 				{ "slug": "text", "name": "Text", "color": "#212121" }
@@ -39,7 +39,7 @@
 	},
 	"styles": {
 		"color": {
-			"background": "#FFFFFF",
+			"background": "#F5F5F5",
 			"text": "#212121"
 		},
 		"typography": {
@@ -54,7 +54,7 @@
 			"button": {
 				"color": {
 					"background": "var:preset|color|primary",
-					"text": "#FFFFFF"
+					"text": "#062A3A"
 				},
 				"border": {
 					"radius": "16px"

@@ -1,6 +1,6 @@
 <?php
 /** Run with `wp eval-file tests/design-setup.php` on a local, disposable BuddyBoss site. */
-$option_names = array( 'buddyboss_theme_options', 'studyieltsvn_design_installed', 'studyieltsvn_design_options_backup' );
+$option_names = array( 'buddyboss_theme_options', 'studyieltsvn_design_installed', 'studyieltsvn_design_options_backup', 'studyieltsvn_palette_updated', 'studyieltsvn_palette_options_backup' );
 $saved = array();
 foreach ( $option_names as $name ) {
 	$saved[ $name ] = get_option( $name );
@@ -17,13 +17,15 @@ try {
 	}
 	delete_option( 'studyieltsvn_design_installed' );
 	delete_option( 'studyieltsvn_design_options_backup' );
+	delete_option( 'studyieltsvn_palette_updated' );
+	delete_option( 'studyieltsvn_palette_options_backup' );
 	$original = array( 'logo_size' => 123, 'boss_body_font_family' => array( 'font-size' => '19px' ) );
 	update_option( 'buddyboss_theme_options', $original );
 	set_transient( 'buddyboss_theme_compressed_custom_css', array( 'css' => 'old' ) );
 	studyieltsvn_setup_design();
 	$options = get_option( 'buddyboss_theme_options' );
 	$check( get_option( 'studyieltsvn_design_installed' ), 'Setup did not complete' );
-	$check( '#FFFFFF' === $options['body_background'] && '#FF0000' === $options['accent_color'], 'Palette missing' );
+	$check( '#F5F5F5' === $options['body_background'] && '#006891' === $options['accent_color'], 'Palette missing' );
 	$check( 123 === $options['logo_size'] && '19px' === $options['boss_body_font_family']['font-size'], 'Unrelated settings changed' );
 	$check( 'Linotte' === $options['boss_body_font_family']['font-family'], 'Body font missing' );
 	$check( $original === get_option( 'studyieltsvn_design_options_backup' ), 'Backup differs' );
@@ -43,6 +45,15 @@ try {
 	update_option( 'buddyboss_theme_options', $options );
 	studyieltsvn_setup_design();
 	$check( $options === get_option( 'buddyboss_theme_options' ), 'Reactivation overwrote edits' );
+	studyieltsvn_update_palette();
+	$migrated = get_option( 'buddyboss_theme_options' );
+	$check( '#006891' === $migrated['accent_color'], 'Existing palette was not updated' );
+	$check( 123 === $migrated['logo_size'] && '19px' === $migrated['boss_body_font_family']['font-size'], 'Palette update changed unrelated settings' );
+	$check( $options === get_option( 'studyieltsvn_palette_options_backup' ), 'Palette backup differs' );
+	$migrated['accent_color'] = '#123456';
+	update_option( 'buddyboss_theme_options', $migrated );
+	studyieltsvn_update_palette();
+	$check( $migrated === get_option( 'buddyboss_theme_options' ), 'Palette update overwrote later edits' );
 	// A retry must reuse the existing native font records.
 	delete_option( 'studyieltsvn_design_installed' );
 	studyieltsvn_setup_design();

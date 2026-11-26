@@ -1,0 +1,66 @@
+html[data-studyieltsvn-color-scheme="dark"] {
+	color-scheme: dark;
+	--bb-primary-color: #69dcff;
+	--bb-primary-color-rgb: 105, 220, 255;
+	--bb-body-background-color: #121212;
+	--bb-body-background-color-rgb: 18, 18, 18;
+	--bb-body-text-color: #ffffff;
+	--bb-body-text-color-rgb: 255, 255, 255;
+	--bb-headings-color: #ffffff;
+	--bb-headings-color-rgb: 255, 255, 255;
+	--bb-alternate-text-color: #b3b3b3;
+	--bb-alternate-text-color-rgb: 179, 179, 179;
+	--bb-content-background-color: #1c1c1e;
+	--bb-content-alternate-background-color: #252525;
+	--bb-content-border-color: #404040;
+	--bb-header-background: #121212;
+	--bb-header-alternate-background: #252525;
+	--bb-header-links: #ffffff;
+	--bb-header-links-hover: #69dcff;
+	--bb-sidenav-background: #121212;
+	--bb-sidenav-text-regular: #ffffff;
+	--bb-sidenav-text-hover: #ffffff;
+	--bb-sidenav-text-active: #062a3a;
+	--bb-sidenav-menu-background-color-regular: #121212;
+	--bb-sidenav-menu-background-color-hover: #252525;
+	--bb-sidenav-menu-background-color-active: #1db0f6;
+	--bb-sidenav-count-text-color-regular: #ffffff;
+	--bb-sidenav-count-text-color-hover: #062a3a;
+	--bb-sidenav-count-text-color-active: #062a3a;
+	--bb-sidenav-count-background-color-regular: #252525;
+	--bb-sidenav-count-background-color-hover: #69dcff;
+	--bb-sidenav-count-background-color-active: #69dcff;
+	--bb-footer-background: #121212;
+	--bb-footer-widget-background: #1c1c1e;
+	--bb-footer-text-color: #ffffff;
+	--bb-footer-menu-link-color-regular: #ffffff;
+	--bb-footer-menu-link-color-hover: #69dcff;
+	--bb-footer-menu-link-color-active: #ffffff;
+	--bb-primary-button-background-regular: #1db0f6;
+	--bb-primary-button-background-hover: #69dcff;
+	--bb-primary-button-border-regular: #1db0f6;
+	--bb-primary-button-border-hover: #69dcff;
+	--bb-primary-button-text-regular: #062a3a;
+	--bb-primary-button-text-hover: #062a3a;
+	--bb-secondary-button-background-regular: #006891;
+	--bb-secondary-button-background-hover: #004a67;
+	--bb-secondary-button-border-regular: #006891;
+	--bb-secondary-button-border-hover: #004a67;
+	--bb-input-focus-border-color: #69dcff;
+	--bb-label-background-color: #123343;
+	--bb-label-text-color: #69dcff;
+	--bb-tooltip-background: #ffffff;
+	--bb-tooltip-color: #121212;
+	--wp--preset--color--text: #ffffff;
+}
+
+html[data-studyieltsvn-color-scheme="dark"] body {
+	background-color: #121212;
+	color: #ffffff;
+}
+
+html[data-studyieltsvn-color-scheme="dark"] :is(input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]), select, textarea) {
+	background-color: #252525;
+	border-color: #555555;
+	color: #ffffff;
+}

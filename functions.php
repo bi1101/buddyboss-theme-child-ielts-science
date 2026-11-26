@@ -75,6 +75,71 @@ function studyieltsvn_setup_design() {
 // Run after BuddyBoss registers its Custom Fonts post type, including existing child-theme installs.
 add_action( 'init', 'studyieltsvn_setup_design', 20 );
 
+/** Update the old color preset once without changing typography or other settings. */
+function studyieltsvn_update_palette() {
+	if ( ! get_option( 'studyieltsvn_design_installed' ) || get_option( 'studyieltsvn_palette_updated' ) ) {
+		return;
+	}
+
+	$preset = json_decode( file_get_contents( get_stylesheet_directory() . '/config/buddyboss-preset.json' ), true );
+	$options = get_option( 'buddyboss_theme_options', array() );
+	if ( ! is_array( $preset ) || ! is_array( $options ) ) {
+		error_log( 'Study IELTS: unable to update the BuddyBoss color palette.' );
+		return;
+	}
+
+	$keys = array(
+		'accent_color', 'body_background', 'primary_button_background', 'primary_button_border',
+		'primary_button_text_color', 'secondary_button_background', 'secondary_button_border',
+		'header_links_hover', 'sidenav_text_color', 'sidenav_menu_background_color',
+		'sidenav_count_text_color', 'sidenav_count_background_color', 'footer_menu_link_color',
+		'login_register_link_color', 'login_register_button_background_color',
+		'login_register_button_border_color', 'login_register_button_text_color',
+		'label_background_color', 'label_text_color',
+	);
+	$palette = array_intersect_key( $preset, array_flip( $keys ) );
+	if ( count( $palette ) !== count( $keys ) ) {
+		error_log( 'Study IELTS: the BuddyBoss color preset is incomplete.' );
+		return;
+	}
+
+	add_option( 'studyieltsvn_palette_options_backup', $options, '', false );
+	if ( false === get_option( 'studyieltsvn_palette_options_backup' ) ) {
+		error_log( 'Study IELTS: unable to back up the BuddyBoss color palette.' );
+		return;
+	}
+	$updated = array_replace_recursive( $options, $palette );
+	update_option( 'buddyboss_theme_options', $updated );
+	if ( get_option( 'buddyboss_theme_options' ) !== $updated ) {
+		error_log( 'Study IELTS: unable to save the BuddyBoss color palette.' );
+		return;
+	}
+	delete_transient( 'buddyboss_theme_compressed_custom_css' );
+	if ( ! add_option( 'studyieltsvn_palette_updated', true, '', false ) && ! get_option( 'studyieltsvn_palette_updated' ) ) {
+		error_log( 'Study IELTS: unable to record the BuddyBoss palette update.' );
+	}
+}
+add_action( 'init', 'studyieltsvn_update_palette', 21 );
+
+/** Match native BuddyBoss pages to the React app's color-mode preference. */
+function studyieltsvn_enqueue_color_scheme() {
+	if ( apply_filters( 'ieltssci_is_shell_request', false ) ) {
+		return;
+	}
+
+	foreach ( array( 'css', 'js' ) as $extension ) {
+		$relative = '/assets/color-scheme.' . $extension;
+		$path = get_stylesheet_directory() . $relative;
+		$version = file_exists( $path ) ? (string) filemtime( $path ) : null;
+		if ( 'css' === $extension ) {
+			wp_enqueue_style( 'studyieltsvn-color-scheme', get_stylesheet_directory_uri() . $relative, array( 'studyieltsvn-child' ), $version );
+		} else {
+			wp_enqueue_script( 'studyieltsvn-color-scheme', get_stylesheet_directory_uri() . $relative, array(), $version, false );
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'studyieltsvn_enqueue_color_scheme', 21 );
+
 /**
  * Keep BuddyBoss's site chrome from styling the React shell.
  *
